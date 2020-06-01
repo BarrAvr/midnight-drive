@@ -1,107 +1,76 @@
-#include <SFML/Graphics.hpp>
-#include <iomanip>
 #include <iostream>
-#include <string>
+#include <SFML/Graphics.hpp>
+#include "obstacle.h"
+#include "Car.h"
+#include "baracade.h"
+#include "gasoline.h"
+#include "cone.h"
 
-const bool DEBUG = true;
+using namespace std;
 
-std::string ResourcePath = "C:/Users/Evan/Desktop/Files/Driving Game/";
+bool checkCollisions(Car, Obstacle*);
+
+//coin obstacle
+
+using namespace sf;
+using namespace obs;
 
 int main()
 {
-	unsigned frameRate = 30;
-	sf::RenderWindow window(sf::VideoMode(640, 480), "Driving Game v0.001a");
-	window.setFramerateLimit(frameRate);
+    sf::RenderWindow window(sf::VideoMode(1000, 800), "Obstacle Testing");
+    sf::Texture texture;
+    if (!texture.loadFromFile("C:\\Users\\Barr Avrahamov\\source\\repos\\SFML_Stuff\\SFML_Stuff\\Car game v4\\Construction objects\\Traffic cone.png")) {
+        window.close();
+    }
 
-// Title Screen & High Score List -------------------------------
-	// ......
+    window.getSize().x;
 
-// Game Graphics Setup ------------------------------------------
-	
-	// change window size if game & title screens have different dimentions
-		// window.setSize(sf::Vector2u(640.0f, 480.0f));
+    Obstacle* ptr;
 
-	// Player Car
-	sf::RectangleShape player(sf::Vector2f(128.0f, 128.0f));
-	sf::Texture playerTexture;
-	playerTexture.loadFromFile(ResourcePath + "Car/Car blue.png");
-	player.setTexture(&playerTexture);
-	player.setPosition(sf::Vector2f(295, 320));
+    ptr = new Baracade(0, 0, 120, 120);
 
-	// Game Objects (obstacles & collectibles)
+    Car car(120, 0, 120, 120);
 
-	// Background (currently only static)
-	sf::RectangleShape bg(sf::Vector2f(640, 480));
-	sf::Texture bgTexture;
-	bgTexture.loadFromFile(ResourcePath + "BG/tempBG.png");
-	bg.setTexture(&bgTexture);
-	const int targetX[4] = { 204, 295, 388, 480 };	// Lane x-pos for car
+    while (window.isOpen()) {
+            sf::Event event;
+            while (window.pollEvent(event))
+            {
+                if (event.type == sf::Event::Closed)
+                    window.close();
+            }
 
-	// Game Variables
-	sf::Clock moveTimeout;		// Slows the rate of switching lane
-	sf::Clock clock;			// clock used to track game runtime
-	int numObstacles = 0;
-	// double speed;	// will be used to change rate that objects and bg move
-	int currentLane = 2;
-	bool movingToLane = false;
-	bool direction = false;		// false = left, true = right (given that movingToLane = true)
+            if (ptr != nullptr && Obstacle::checkCollisions(car, ptr)) {
+                cout << "Health: " << car.getHealth() << endl;
+                dynamic_cast<Baracade*>(ptr)->crashInToCar(window, car);
+                delete ptr;
+                ptr = nullptr;
+                cout << "Health: " << car.getHealth() << endl;
+            }
 
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            {
+                car.move(1, 0);
+            }
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            {
+                car.move(-1, 0);
+            }
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            {
+                car.move(0, -1);
+            }
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+            {
+                car.move(0, 1);
+            }
 
-// Main Game Loop -----------------------------------------------
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
+            window.clear();
+            if (ptr != nullptr) {
+                (*ptr).draw(window);
+            }
+            car.draw(window);
+            window.display();
+    }
 
-		// Move Right
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && (currentLane < 4) && (moveTimeout.getElapsedTime().asMilliseconds() > 200))
-		{
-			currentLane++;
-			movingToLane = true;
-			direction = true;
-			std::cout << "Moving to lane: " << currentLane << std::endl;
-			moveTimeout.restart();
-		}
-		// Move Left
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && (currentLane > 1) && (moveTimeout.getElapsedTime().asMilliseconds() > 200))
-		{
-			currentLane--;
-			movingToLane = true;
-			direction = false;
-			std::cout << "Moving to lane: " << currentLane << std::endl;
-			moveTimeout.restart();
-		}
-
-		if(movingToLane)
-		{
-			// right: +10 x-pos		left: -10 x-pos
-			player.move(sf::Vector2f(direction ? 10 : -10, 0));
-
-			int targetPos = targetX[currentLane-1];	// lane x-pos
-			int playerPos = player.getPosition().x;
-
-			if(DEBUG)	std::cout << "pos: " << playerPos << std::endl;
-
-			// stop moving if car is in the correct lane
-			if (playerPos >= (targetPos -5) && playerPos <= (targetPos +5))
-			{
-				movingToLane = false;
-				std::cout << "movingLanes = false" << std::endl << std::endl;
-			}
-
-		}
-
-		// Window Redraw ----------
-		window.clear();
-		window.draw(bg);
-		window.draw(player);
-		window.display();
-
-	}
-
-	return 0;
+    return 0;
 }
