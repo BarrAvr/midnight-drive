@@ -1,25 +1,33 @@
 #include "Constants.h"
 #include "GameState.h"
 #include "Obstacle.h"
-#include "MainMenu.h"
+
+namespace cs = constants;
 
 void GameState::runGame()
 {
-    this->setWindow();
+
     this->createMenu();
 }
 
 void GameState::createMenu()
 {
-    menu_.addMusic();
-    bool play = menu_.addMenu(window_);
+    MainMenu menu{};
+
+    sf::RenderWindow window(sf::VideoMode(cs::WindowWidth_, cs::WindowHeight_), "Driving Game");
+    menu.addMusic();
+    bool play = menu.addMenu(window);
     if(play)
+    {
+        window.close();
         this->startDriving();
-        
+
+    }
 }
 
 void GameState::startDriving()
 {
+    this->setWindow();
     while (window_.isOpen())
     {
 

@@ -5,7 +5,6 @@
 #include "Player.h"
 #include "MainMenu.h"
 #include <SFML/Graphics.hpp>
-//#include <NonCopyable.hpp>
 
 class GameState
 {
@@ -16,7 +15,6 @@ private:
     std::vector<Obstacle*> obstacles_;
     Player player_ = Player();
     Background background_ = Background();
-    MainMenu menu_;
 
     void setWindow();
     void spawnObstacles();

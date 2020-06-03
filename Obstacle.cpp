@@ -7,8 +7,7 @@
 Obstacle::Obstacle()
 {
     const std::string path{constants::PATHS.at(rand() % constants::PATHS.size())};
-    std::cout << path << std::endl;
-    //assert(texture_.loadFromFile(resourcePath() + path));
+    assert(texture_.loadFromFile(constants::ResourcePath + path));
 
     obstacle_.setSize(sf::Vector2f(constants::obstacleSize, constants::obstacleSize));
     obstacle_.setTexture(&texture_);
@@ -39,7 +38,7 @@ Obstacle* Obstacle::createObstacles(const size_t windowWidth)
 {
     auto obstacle = new Obstacle();
     auto& obs = obstacle->getObstacle();
-    obs.setPosition(rand() % static_cast<int>(windowWidth - obs.getSize().x), 0.f);
+    obs.setPosition(rand() % static_cast<int>(windowWidth - obs.getSize().x), -100.f);
 
     return obstacle;
 }
