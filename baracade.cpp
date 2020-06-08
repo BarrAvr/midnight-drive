@@ -1,7 +1,15 @@
 #include "baracade.h"
+#include "Constants.h"
 
-Baracade::Baracade(float x, float y, float width, float height, int damage_level) : Obstacle(x, y, width, height, damage_level) {
-    if (!texture.loadFromFile("C:\\Users\\Barr Avrahamov\\source\\repos\\SFML_Stuff\\SFML_Stuff\\Car game v4\\Construction objects\\Street baracade.png")) {
+Baracade::Baracade() : Obstacle() {
+    damage_level = 50;
+    if (!texture_.loadFromFile(constants::ResourcePath + constants::PATHS[2])) {
+        throw "Baracade Image Not Found";
+    }
+}
+
+Baracade::Baracade(float x, float y, float width, float height, int damage_level) : Obstacle() {
+    if (!texture_.loadFromFile(constants::ResourcePath + constants::PATHS[2])) {
         throw "Baracade Image Not Found";
     }
 }

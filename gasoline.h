@@ -9,6 +9,7 @@ private:
 	const std::string GASOLINE_CRASH_SOUND_FILE_LOCATION;
 	void makeCrashSound(sf::RenderWindow&);
 public:
+	Gasoline();
 	Gasoline(float x, float y, float width, float height, int damage_level = -10);
-	std::string type() const { return "big object"; };
+	std::string type() const { return "gasoline"; };
 };

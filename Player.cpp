@@ -2,9 +2,9 @@
 #include "Player.h"
 #include <cassert>
 
-Player::Player()
+Player::Player() : health(100)
 {
-    assert(texture_.loadFromFile(resourcePath() + constants::carTexture));
+    assert(texture_.loadFromFile(constants::ResourcePath + constants::carTexture));
     player_.setSize(sf::Vector2f(constants::playerSize, constants::playerSize));
     player_.setTexture(&texture_);
     player_.setPosition(sf::Vector2f(constants::playerStartingPosX, constants::playerStartingPosY));
@@ -58,3 +58,9 @@ void Player::draw(sf::RenderWindow& window)
 {
     window.draw(player_);
 }
+
+sf::RectangleShape Player::getPlayer()
+{
+    return player_;
+}
+

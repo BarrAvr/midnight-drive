@@ -1,7 +1,15 @@
 #include "cone.h"
+#include "Constants.h"
 
-Cone::Cone(float x, float y, float width, float height, int damage_level) : Obstacle(x, y, width, height, damage_level) {
-    if (!texture.loadFromFile("C:\\Users\\Barr Avrahamov\\source\\repos\\SFML_Stuff\\SFML_Stuff\\Car game v4\\Construction objects\\traffic cone.png")) {
+Cone::Cone() : Obstacle() {
+    damage_level = 20;
+    if (!texture_.loadFromFile(constants::ResourcePath + constants::PATHS[1])) {
+        throw "Cone Image Not Found";
+    }
+}
+
+Cone::Cone(float x, float y, float width, float height, int damage_level) : Obstacle() {
+    if (!texture_.loadFromFile(constants::ResourcePath + constants::PATHS[1])) {
         throw "Cone Image Not Found";
     }
 }

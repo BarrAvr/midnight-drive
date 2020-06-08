@@ -5,22 +5,23 @@
 #include "Player.h"
 #include "MainMenu.h"
 #include <SFML/Graphics.hpp>
-//#include <NonCopyable.hpp>
 
 class GameState
 {
 private:
-    int obstacleSpawnTimer_ = 0;
-
+    sf::Clock obstacleClock;
+    sf::Font font;
+    sf::Text health_text;
     sf::RenderWindow window_;
     std::vector<Obstacle*> obstacles_;
     Player player_ = Player();
     Background background_ = Background();
-    MainMenu menu_;
 
     void setWindow();
     void spawnObstacles();
+    void moveObstacles();
     void drawGame();
+    void checkPlayerObstacleCollisions();
 
 public:
     GameState() {};
@@ -29,4 +30,5 @@ public:
     void runGame();
     void createMenu();
     void startDriving();
+    Obstacle* createObstacles(const size_t windowWidth);
 };
