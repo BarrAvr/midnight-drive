@@ -4,12 +4,13 @@
 #include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 namespace constants
 {
-    const std::string ResourcePath{"/home/dlieber/Downloads/Car_game_v4/"};
+    const std::string ResourcePath{"/Users/kelly/CLionProjects/MidnightDrive/GameFiles/"};
 
-    const std::array<std::string_view, 5> PATHS
+    const std::array<std::string, 5> PATHS
             {
                     "Trash can fallen.png",
                     "Traffic cone.png",
