@@ -4,6 +4,9 @@
 #include <iostream>
 #include <vector>
 #include "Screen.h"
+#include "Scoreboard.h"
+#include "Textbox.h"
+
 class Screen
 {
 protected:
@@ -14,6 +17,52 @@ public:
 	virtual void draw(sf::RenderWindow& window) {};
 	virtual void hoverSelected(int selection) {};
 };
+
+
+//NEW CHANGES HERE
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class NameInput : public virtual Screen
+{
+private:
+	bool continueSelected;
+	sf::Text textbox;
+	std::ostringstream text;
+public:
+	using Score = std::pair<int, string>;
+
+	NameInput() = default;
+	NameInput(float width, float height);
+	void draw(sf::RenderWindow& window);
+	void hoverSelected(int selection);
+	void inputLogic(int charTyped);
+	void deleteLastChar();
+	void typedOn(sf::Event input);
+	Score addScoreToFile(ostream& file);
+	std::string getName();
+	bool getContinueSelected() { return continueSelected; }
+
+};
+
+
+class GameOver : public virtual Screen
+{
+private:
+	bool selectedExit;
+	std::vector<sf::Text> scoresLine;
+
+public:
+	GameOver() :Screen() {};
+	GameOver(float width, float height);
+	void draw(sf::RenderWindow& window);
+	void hoverSelected(int selection);
+	bool getSelectedExit() { return selectedExit; }
+	void addScoresToScreen(Scoreboard& score);
+
+};
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 
@@ -38,6 +87,7 @@ public:
 class Control : public virtual Screen
 {
 	bool selectedBack;
+
 public:
 	Control() :Screen() {};
 	Control(float width, float height);
@@ -47,4 +97,3 @@ public:
 	void hoverSelected(int selection);
 	bool getSelectedBack() { return selectedBack; }
 };
-
