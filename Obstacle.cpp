@@ -22,7 +22,7 @@ sf::RectangleShape& Obstacle::getObstacle()
 void Obstacle::move(sf::RenderWindow& window, std::vector<Obstacle*>& obstacles, int i)
 {
 
-    obstacle_.move(0.f, 5.f);
+    obstacle_.move(0.f, 20.f);
     if (obstacle_.getPosition().y > window.getSize().y)
     {
         obstacles.erase(obstacles.begin() + i);

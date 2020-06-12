@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Player.h"
+#include <SFML/Audio.hpp>
 
 #pragma once
 namespace obs {
@@ -26,6 +27,7 @@ public:
 	const float getHeight() { return obstacle_.getSize().y; };
     //static Obstacle* createObstacles(size_t windowWidth);
 	static bool checkCollisions(Player, Obstacle*);
+	int getDamage() { return damage_level; }
 };
 
 /*

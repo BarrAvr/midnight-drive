@@ -17,6 +17,8 @@ public:
     MainMenu();
     ~MainMenu() = default;
     void addMusic();
+    void pauseMusic();
+    void playMusic();
     bool addMenu(sf::RenderWindow& window);
 
     void draw(sf::RenderWindow& window) override;

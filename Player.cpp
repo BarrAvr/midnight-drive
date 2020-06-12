@@ -31,16 +31,20 @@ void Player::changeLane(Player::Movement playerDirection)
     }
 }
 
-void Player::movePlayer()
+void Player::movePlayer(bool backdoor)
 {
     if (movingToLane_ != Player::Movement::NONE)
     {
         if (movingToLane_ == Player::Movement::LEFT)
         {
             player_.move(sf::Vector2f(-10, 0));
+            if(backdoor)
+                std::cout << player_.getPosition().x << std::endl;
         } else
         {
             player_.move(sf::Vector2f(10, 0));
+            if(backdoor)
+                std::cout << player_.getPosition().x << std::endl;
         }
 
         int targetPos = constants::targetX_[currentLane - 1];    // lane x-pos

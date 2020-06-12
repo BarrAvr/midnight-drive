@@ -32,7 +32,20 @@ MainMenu::MainMenu() : Screen()
         temp.setPosition(cs::menuPositions[i]);
         menuText.push_back(temp);
     }
+    /*
+    //need to implement file check stuff here
+    music.openFromFile(cs::ResourcePath + "background_music.wav");
 
+    //need to implement file check stuff here
+    //carDriving.openFromFile(cs::ResourcePath + "car_start.wav");
+
+    //need to implement file check stuff here
+    buffer.loadFromFile(cs::ResourcePath + "button_select.wav");
+
+    button.setBuffer(buffer);
+
+    music.play();
+    */
     selectedItemIndex = 1;
 }
 
@@ -58,20 +71,29 @@ void MainMenu::draw(sf::RenderWindow& window)
 
 void MainMenu::addMusic()
 {
+
     //need to implement file check stuff here
     music.openFromFile(cs::ResourcePath + "background_music.wav");
 
     //need to implement file check stuff here
-    carDriving.openFromFile(cs::ResourcePath + "car_start.wav");
+    //carDriving.openFromFile(cs::ResourcePath + "car_start.wav");
 
     //need to implement file check stuff here
     buffer.loadFromFile(cs::ResourcePath + "button_select.wav");
 
     button.setBuffer(buffer);
-
     music.play();
 }
+void MainMenu::playMusic()
+{
+    if(music.getStatus() != sf::Music::Playing)
+        music.play();
+}
 
+void MainMenu::pauseMusic()
+{
+    music.pause();
+}
 void MainMenu::Move()
 {
     selectedItemIndex > 1 ? selectedItemIndex-- : selectedItemIndex++;

@@ -14,7 +14,7 @@ public:
     Player();
     ~Player() = default;
     void changeLane(Movement playerDirection);
-    void movePlayer();
+    void movePlayer(bool);
     void draw(sf::RenderWindow& window);
     sf::RectangleShape getPlayer();
     const float getX() { return player_.getPosition().x; };

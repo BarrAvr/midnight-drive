@@ -15,6 +15,6 @@ Baracade::Baracade(float x, float y, float width, float height, int damage_level
 }
 
 void Baracade::makeCrashSound(sf::RenderWindow& window) {
-    //need to copy sound here
+
     std::cout << "baracade crash noise" << std::endl;
 }

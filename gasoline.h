@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "obstacle.h"
+#include "Obstacle.h"
 
 using namespace obs;
 

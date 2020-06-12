@@ -4,10 +4,11 @@
 #include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 namespace constants
 {
-    const std::string ResourcePath{"C:\\Users\\Barr Avrahamov\\source\\repos\\SFML_Stuff\\SFML_Stuff\\Car_game_v4\\"};
+    const std::string ResourcePath{"C:/Users/Barr Avrahamov/source/repos/SFML_Stuff/SFML_Stuff/Car_game_v4/"};
 
     const std::array<std::string, 5> PATHS
             {
@@ -22,7 +23,7 @@ namespace constants
 
     constexpr auto WindowWidth_ = 1000;
     constexpr auto WindowHeight_ = 800;
-    constexpr auto frameRate_ = 30;
+    constexpr auto frameRate_ = 60;
     constexpr auto playerStartingPosX = 485;
     constexpr auto playerStartingPosY = 600;
 

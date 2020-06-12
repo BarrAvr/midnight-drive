@@ -19,12 +19,12 @@ void Background::changeBackground(sf::RenderWindow& window)
     //Scrolling background
     if(background1_.getPosition().y < window.getSize().y || background2_.getPosition().y < window.getSize().y)
     {
-        background1_.move(sf::Vector2f(0, 10));
-        background2_.move(sf::Vector2f(0, 10));
+        background1_.move(sf::Vector2f(0, 20));
+        background2_.move(sf::Vector2f(0, 20));
         if(background1_.getPosition().y == 800)
-            background1_.setPosition(sf::Vector2f(0, -780));
-        if(background2_.getPosition().y == 800)
-            background2_.setPosition(sf::Vector2f(0, -780));
+            background1_.setPosition(sf::Vector2f(0, -800));
+        if(background2_.getPosition().y >= 800)
+            background2_.setPosition(sf::Vector2f(0, -800));
     }
 }
 
