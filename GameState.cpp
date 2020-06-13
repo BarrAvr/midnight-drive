@@ -4,6 +4,9 @@
 #include "cone.h"
 #include "baracade.h"
 #include "gasoline.h"
+#include "Streetsign.h"
+#include "Trashcan.h"
+#include "Pothole.h"
 
 namespace cs = constants;
 
@@ -221,6 +224,21 @@ void  GameState::checkPlayerObstacleCollisions() {
                 if(backdoorOn)
                     std::cout << "Hit a gasoline! Plus " << -obs->getDamage() << " health" << std::endl;
             }
+            else if (obs->type() == "pothole") {
+                dynamic_cast<Pothole*>(obs)->crashInToCar(window_, player_);
+                if (backdoorOn)
+                    std::cout << "Hit a pothole! Plus " << -obs->getDamage() << " health" << std::endl;
+            }
+            else if (obs->type() == "streetsign") {
+                dynamic_cast<Streetsign*>(obs)->crashInToCar(window_, player_);
+                if (backdoorOn)
+                    std::cout << "Hit a streetsign! Plus " << -obs->getDamage() << " health" << std::endl;
+            }
+            else if (obs->type() == "trashcan") {
+                dynamic_cast<Trashcan*>(obs)->crashInToCar(window_, player_);
+                if (backdoorOn)
+                    std::cout << "Hit a trashcan! Plus " << -obs->getDamage() << " health" << std::endl;
+            }
             //delete obs;
             obs = nullptr;
             obstacles_.erase(obstacles_.begin() + i--);
@@ -241,8 +259,22 @@ Obstacle* GameState::createObstacles(const size_t windowWidth)
             std::cout << "Gasoline obstacle" << std::endl;
         */
     }
-    else if (odds <= 40) {
+    else if (odds <= 10 + 20) {
         obstacle = new Baracade();
+        /*
+        if(backdoorOn)
+            std::cout << "Baracade obstacle" << std::endl;
+        */
+    }
+    else if (odds <= 10 + 20 + 10) {
+        obstacle = new Streetsign();
+        /*
+        if(backdoorOn)
+            std::cout << "Baracade obstacle" << std::endl;
+        */
+    }
+    else if (odds <= 10 + 20 + 10 + 30) {
+        obstacle = new Pothole();
         /*
         if(backdoorOn)
             std::cout << "Baracade obstacle" << std::endl;

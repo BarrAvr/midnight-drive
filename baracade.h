@@ -1,15 +1,13 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <iostream>
 #include "Obstacle.h"
 
 using namespace obs;
 
 class Baracade : public Obstacle {
 private:
-	const std::string BARACADE_CRASH_SOUND_FILE_LOCATION;
-	void makeCrashSound(sf::RenderWindow&);
+	void makeCrashSound();
 public:
 	Baracade();
 	Baracade(float x, float y, float width, float height, int damage_level = 50);

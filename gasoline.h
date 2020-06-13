@@ -6,8 +6,7 @@ using namespace obs;
 
 class Gasoline : public Obstacle {
 private:
-	const std::string GASOLINE_CRASH_SOUND_FILE_LOCATION;
-	void makeCrashSound(sf::RenderWindow&);
+	void makeCrashSound();
 public:
 	Gasoline();
 	Gasoline(float x, float y, float width, float height, int damage_level = -10);

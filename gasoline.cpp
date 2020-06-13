@@ -1,11 +1,17 @@
 #include "gasoline.h"
 #include "Constants.h"
 
-Gasoline::Gasoline() : Obstacle() {
+Gasoline::Gasoline() {// : Obstacle() {
     damage_level = -10;
     if (!texture_.loadFromFile(constants::ResourcePath + constants::PATHS[3])) {
         throw "Gasoline Image Not Found";
     }
+    obstacle_.setSize(sf::Vector2f(constants::obstacleSize, constants::obstacleSize));
+    obstacle_.setTexture(&texture_);
+    if (!crashBuffer.loadFromFile(constants::ResourcePath + constants::GasCrashSound)) {
+        throw "Gasoline crash sound Not Found";
+    }
+    crashSound.setBuffer(crashBuffer);
 }
 
 Gasoline::Gasoline(float x, float y, float width, float height, int damage_level) : Obstacle() {
@@ -14,7 +20,6 @@ Gasoline::Gasoline(float x, float y, float width, float height, int damage_level
     }
 }
 
-void Gasoline::makeCrashSound(sf::RenderWindow& window) {
-    //need to copy sound here
-    std::cout << "Gasoline crash noise" << std::endl;
+void Gasoline::makeCrashSound() {
+    crashSound.play();
 }

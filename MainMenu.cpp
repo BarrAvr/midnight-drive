@@ -7,6 +7,7 @@ namespace cs = constants;
 
 MainMenu::MainMenu() : Screen()
 {
+
     //TODO: Implement file check
     if (!font.loadFromFile(cs::ResourcePath + cs::font))
     {}

@@ -5,13 +5,9 @@
 #include "Obstacle.h"
 #include "Player.h"
 
-Obstacle::Obstacle() : damage_level(10)
+Obstacle::Obstacle()
 {
-    const std::string path{constants::PATHS.at(rand() % constants::PATHS.size())};
-    assert(texture_.loadFromFile(constants::ResourcePath + path));
-
-    obstacle_.setSize(sf::Vector2f(constants::obstacleSize, constants::obstacleSize));
-    obstacle_.setTexture(&texture_);
+    //do nothing
 }
 
 sf::RectangleShape& Obstacle::getObstacle()

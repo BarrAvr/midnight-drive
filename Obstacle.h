@@ -13,11 +13,13 @@ protected:
     sf::RectangleShape obstacle_;
     sf::Texture texture_;
 	int damage_level;
-	virtual void makeCrashSound(sf::RenderWindow&) { std::cout << "obstacle crash sound" << std::endl; };//= 0;
+	virtual void makeCrashSound() = 0;
+	sf::SoundBuffer  crashBuffer;
+	sf::Sound crashSound;
 public:
     explicit Obstacle();
 	virtual std::string type() const = 0;// { return "obstacle"; };//const = 0;
-	void crashInToCar(sf::RenderWindow& window, Player& player) { player.setHealth(player.getHealth() - damage_level); makeCrashSound(window); };
+	void crashInToCar(sf::RenderWindow& window, Player& player) { player.setHealth(player.getHealth() - damage_level); makeCrashSound(); };
     sf::RectangleShape& getObstacle();
     void move(sf::RenderWindow& window, std::vector<Obstacle*>& obstacles, int i);
     void draw(sf::RenderWindow& window);
