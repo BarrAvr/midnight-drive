@@ -1,12 +1,16 @@
 #include "Constants.h"
 #include "Player.h"
-#include <cassert>
 
-Player::Player()
+Player::Player(HealthScore& healthScore) : healthScore_(healthScore)
 {
-    assert(texture_.loadFromFile(constants::ResourcePath + constants::carTexture));
-    player_.setSize(sf::Vector2f(constants::playerSize, constants::playerSize));
-    player_.setTexture(&texture_);
+    //TODO: Add file check
+    textureBlue_.loadFromFile(constants::ResourcePath + constants::carTexture);
+    textureRed_.loadFromFile(constants::ResourcePath + constants::carHitTexture);
+
+    player_.setScale(sf::Vector2f(constants::playerSize, constants::playerSize));
+
+    player_.setTexture(textureBlue_);
+
     player_.setPosition(sf::Vector2f(constants::playerStartingPosX, constants::playerStartingPosY));
 }
 
@@ -59,8 +63,28 @@ void Player::draw(sf::RenderWindow& window)
     window.draw(player_);
 }
 
-sf::RectangleShape Player::getPlayer()
+sf::Sprite Player::getPlayer()
 {
     return player_;
 }
 
+void Player::getHit(Damage dmg)
+{
+    if (dmg == Damage::NOT_HIT)
+    {
+        if (hitTimer_.getElapsedTime().asMilliseconds() > constants::hitDelay)
+        {
+            player_.setTexture(textureBlue_);
+            gettingHit_ = Damage::NOT_HIT;
+        }
+    } else
+    {
+        if (gettingHit_ == Damage::NOT_HIT)
+        {
+            healthScore_.deductHealth();
+            player_.setTexture(textureRed_);
+            hitTimer_.restart();
+            gettingHit_ = Damage::HIT;
+        }
+    }
+}

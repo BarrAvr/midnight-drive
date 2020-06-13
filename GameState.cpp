@@ -1,61 +1,46 @@
 #include "Constants.h"
 #include "GameState.h"
 #include "Obstacle.h"
+#include "Collision.h"
 
 namespace cs = constants;
 
-void GameState::runGame()
+GameState::GameResult GameState::runGame()
 {
-
-    this->createMenu();
-}
-
-void GameState::createMenu()
-{
-    MainMenu menu{};
-
-    sf::RenderWindow window(sf::VideoMode(cs::WindowWidth_, cs::WindowHeight_), "Driving Game");
-    menu.addMusic();
-    bool play = menu.addMenu(window);
-    if(play)
-    {
-        window.close();
-        this->startDriving();
-    }
-}
-
-void GameState::startDriving()
-{
-    this->setWindow();
     while (window_.isOpen())
     {
 
-        sf::Event event;
+        sf::Event event{};
 
         this->handleEvent(event);
         this->spawnObstacles();
         player_.movePlayer();
-
         window_.clear();
 
+        if (health_.getHealth() <= 0)
+        {
+            return GameState::GameResult::DIED;
+        }
         this->drawGame();
 
         window_.display();
     }
+    return GameState::GameResult::RAGEQUIT;
 }
 
-void GameState::setWindow()
+GameState::GameState() : window_(sf::VideoMode(cs::WindowWidth_, cs::WindowHeight_), cs::GameWindowTitle)
 {
-    sf::VideoMode vm = sf::VideoMode(constants::WindowWidth_, constants::WindowHeight_);
-    window_.create(vm, "Midnight Drive");
     window_.setFramerateLimit(constants::frameRate_);
+    music.openFromFile(cs::ResourcePath + "background_music.wav");
+    music.setVolume(15);
+    music.play();
 }
 
 void GameState::handleEvent(sf::Event& event)
 {
     while (window_.pollEvent(event))
     {
-        switch(event.type)
+        switch (event.type)
         {
             case sf::Event::Closed:
             {
@@ -86,9 +71,11 @@ void GameState::handleEvent(sf::Event& event)
 
 void GameState::spawnObstacles()
 {
-    if (obstacleSpawnTimer_ < 20) {
+    if (obstacleSpawnTimer_ < 30)
+    {
         obstacleSpawnTimer_++;
-    } else {
+    } else
+    {
         auto obstacle = Obstacle::createObstacles(constants::WindowWidth_);
         obstacles_.push_back(obstacle);
         obstacleSpawnTimer_ = 0;
@@ -113,11 +100,26 @@ void GameState::drawGame()
 
     player_.draw(window_);
 
-    for(auto& obs : obstacles_)
+    for (auto i = 0; i < obstacles_.size(); i++)
     {
-        if (player_.getPlayer().getGlobalBounds().intersects(obs->getObstacle().getGlobalBounds()))
+        if (Collision::PixelPerfectTest(player_.getPlayer(), obstacles_[i]->getObstacle()))
         {
-            std::cout << "BOOP" << std::endl;
+            player_.getHit(Player::Damage::HIT);
+            obstacles_.erase(obstacles_.begin() + i);
+        } else {
+            player_.getHit(Player::Damage::NOT_HIT);
         }
+    }
+
+    health_.draw(window_);
+}
+
+GameState::~GameState()
+{
+    window_.close();
+
+    for (auto& obs : obstacles_)
+    {
+        delete obs;
     }
 }

@@ -4,27 +4,31 @@
 #include "Obstacle.h"
 #include "Player.h"
 #include "MainMenu.h"
+#include "HealthScore.h"
 #include <SFML/Graphics.hpp>
 
 class GameState
 {
 private:
     int obstacleSpawnTimer_ = 0;
-
+    sf::Music music;
     sf::RenderWindow window_;
     std::vector<Obstacle*> obstacles_;
-    Player player_ = Player();
+    HealthScore health_ = HealthScore();
+    Player player_ = Player(health_);
     Background background_ = Background();
 
-    void setWindow();
     void spawnObstacles();
     void drawGame();
 
 public:
-    GameState() {};
-    ~GameState() {};    
+    enum class GameResult {
+        RAGEQUIT,
+        DIED,
+    };
+
+    explicit GameState();
+    ~GameState();
     void handleEvent(sf::Event& event);
-    void runGame();
-    void createMenu();
-    void startDriving();
+    GameResult runGame();
 };

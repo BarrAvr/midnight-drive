@@ -11,8 +11,10 @@ private:
     sf::RectangleShape background1_, background2_;
 public:
     Background();
+
     ~Background() = default;
 
     void changeBackground(sf::RenderWindow& window);
+
     void draw(sf::RenderWindow& window);
 };
