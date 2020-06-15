@@ -23,9 +23,9 @@ void Background::changeBackground(sf::RenderWindow& window, float speedMultiplie
     {
         background1_.move(sf::Vector2f(0, cs::baseBackgroundMoveSpeed * speedMultiplier));
         background2_.move(sf::Vector2f(0, cs::baseBackgroundMoveSpeed * speedMultiplier));
-        if(background1_.getPosition().y >= 800)
+        if(background1_.getPosition().y >= 780)
             background1_.setPosition(sf::Vector2f(0, -800));
-        if(background2_.getPosition().y >= 800)
+        if(background2_.getPosition().y >= 780)
             background2_.setPosition(sf::Vector2f(0, -800));
     }
 }

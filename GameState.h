@@ -21,10 +21,14 @@ private:
     Background background_ = Background();
     Score score_ = Score();
     float speedMultiplier_ = 1.0;
-
+    bool gamePaused = false;
+    bool backdoor = false;
+    bool stopSpawning = false;
+    bool invulnerability = false;
     void spawnObstacles();
+    void moveObstacles();
     void drawGame();
-
+    Obstacle* createObstacles(Score& score);
 public:
     enum class GameResult {
         RAGEQUIT,

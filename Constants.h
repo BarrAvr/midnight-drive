@@ -8,15 +8,16 @@
 
 namespace constants
 {
-    const std::string ResourcePath{"/home/dlieber/Downloads/Car_game_v4/"};
+    const std::string ResourcePath{"C:/Users/Barr Avrahamov/source/repos/SFML_Stuff/SFML_Stuff/Car_game_v4/"};
 
-    const std::array<std::string, 5> PATHS
+    const std::array<std::string, 6> PATHS
             {
                     "Trash can.png",
                     "Traffic cone.png",
                     "Street baracade.png",
                     "Oil can.png",
                     "Pot hole.png",
+                    "Speed sign broken.png",
             };
 
     const std::string background_ = "background.png";
@@ -42,6 +43,11 @@ namespace constants
     const std::string backgroundMusic = "background_music.wav";
     const std::string carStart = "car_start.wav";
     const std::string buttonSelect = "button_select.wav";
+    const std::string BigCrashSound = "big crash sound.wav";
+    const std::string SmallCrashSound = "small crash sound.wav";
+    const std::string GasCrashSound = "gas crash sound.wav";
+
+
     const std::string lifeTexture = "heart.png";
 
     const std::vector<sf::Vector2f> menuPositions
@@ -101,7 +107,7 @@ namespace constants
                     sf::Vector2f(230, 30)
             };
 
-    const std::int32_t hitDelay(3000);
+    const std::int32_t hitDelay(1000);
 
     const float baseObstacleMoveSpeed = 8.f;
     const float baseBackgroundMoveSpeed = 8.f;

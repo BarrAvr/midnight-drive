@@ -48,6 +48,7 @@ namespace Collision {
     /// You can avoid this by using the "CreateTextureAndBitmask" function
     //////
     bool PixelPerfectTest(const sf::Sprite& Object1 ,const sf::Sprite& Object2, sf::Uint8 AlphaLimit = 0);
+    //bool PixelPerfectTest(const sf::Sprite& Object1, const sf::RectangleShape& Object2, sf::Uint8 AlphaLimit = 0);
 
     //////
     /// Replaces Texture::loadFromFile

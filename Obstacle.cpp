@@ -3,16 +3,16 @@
 #include "Constants.h"
 #include <string_view>
 #include "Obstacle.h"
+#include "Player.h"
 
 namespace cs = constants;
 
-Obstacle::Obstacle(Score& score) : score_(score)
-{
-    const std::string path{cs::PATHS.at(rand() % cs::PATHS.size())};
-    assert(texture_.loadFromFile(cs::ResourcePath + path));
 
-    obstacle_.setScale(sf::Vector2f(cs::obstacleSize, cs::obstacleSize));
-    obstacle_.setTexture(texture_);
+
+
+Obstacle::Obstacle(Score& score, int damage_level) : score_(score), damage_level(damage_level)
+{
+    //do nothing
 }
 
 sf::Sprite& Obstacle::getObstacle()
@@ -27,20 +27,10 @@ void Obstacle::move(sf::RenderWindow& window, std::vector<Obstacle*>& obstacles,
     {
         obstacles.erase(obstacles.begin() + i);
         score_.addToScore();
-    }
+    }    
 }
 
 void Obstacle::draw(sf::RenderWindow& window)
 {
     window.draw(obstacle_);
 }
-
-Obstacle* Obstacle::createObstacles(Score& score)
-{
-    auto obstacle = new Obstacle(score);
-    auto& obs = obstacle->getObstacle();
-    obs.setPosition(cs::targetX_[static_cast<int>(rand() % 4)], -50.f);
-
-    return obstacle;
-}
-

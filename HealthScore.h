@@ -16,7 +16,7 @@ public:
     HealthScore();
     ~HealthScore() = default;
     void draw(sf::RenderWindow& window) override;
-    void deductHealth();
+    void deductHealth(int damage_level = 1);
     int getHealth() const { return numberHearts_; }
 };
 

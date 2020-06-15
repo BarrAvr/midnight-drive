@@ -69,8 +69,7 @@ sf::Sprite Player::getPlayer()
     return player_;
 }
 
-void Player::getHit(Damage dmg)
-{
+void Player::getHit(Damage dmg, int damage_level) {
     if (dmg == Damage::NOT_HIT)
     {
         if (hitTimer_.getElapsedTime().asMilliseconds() > cs::hitDelay)
@@ -78,11 +77,12 @@ void Player::getHit(Damage dmg)
             player_.setTexture(textureBlue_);
             gettingHit_ = Damage::NOT_HIT;
         }
-    } else
+    }
+    else
     {
         if (gettingHit_ == Damage::NOT_HIT)
         {
-            healthScore_.deductHealth();
+            healthScore_.deductHealth(damage_level);
             player_.setTexture(textureRed_);
             hitTimer_.restart();
             gettingHit_ = Damage::HIT;

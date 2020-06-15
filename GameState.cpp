@@ -2,13 +2,14 @@
 #include "GameState.h"
 #include "Obstacle.h"
 #include "Collision.h"
+#include "cone.h"
+#include "baracade.h"
+#include "gasoline.h"
+#include "Streetsign.h"
+#include "Trashcan.h"
+#include "Pothole.h"
 
 namespace cs = constants;
-
-bool gamePaused = false;
-bool backdoor = false;
-int pauseCount = 0;
-int backdoorCount = 0;
 
 GameState::GameResult GameState::runGame()
 {
@@ -16,11 +17,14 @@ GameState::GameResult GameState::runGame()
 
     while (window_.isOpen())
     {
+
         sf::Event event{};
 
         this->handleEvent(event);
-
-        this->spawnObstacles();
+        if (!stopSpawning) {
+            this->spawnObstacles();
+        }
+        this->moveObstacles();
 
         player_.movePlayer(speedMultiplier_);
         window_.clear();
@@ -60,47 +64,46 @@ void GameState::handleEvent(sf::Event& event)
             case sf::Event::KeyPressed:
             {
                 Player::Movement playerDirection = Player::Movement::NONE;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                if (!gamePaused && sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
                 {
                     // move car right
                     playerDirection = Player::Movement::RIGHT;
 
-                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                } else if (!gamePaused && sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
                 {
                     // move car left
                     playerDirection = Player::Movement::LEFT;
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::B)) // Turn on/off backdoor
                 {
-                    backdoorCount++;
-                    if (backdoorCount % 2 != 0)
+                    backdoor = !backdoor;
+                    if (backdoor) 
                     {
-                        backdoor = true;
                         std::cout << "Backdoor is on" << std::endl;
                     }
-                    else
+                    else 
                     {
-                        backdoor = false;
-                        std::cout << "Backdoor is off" << std::endl;
+                        std::cout << "Backdoor is on" << std::endl;
+                        stopSpawning = false;
+                        invulnerability = false;
                     }
+                }
+                else if (backdoor && sf::Keyboard::isKeyPressed(sf::Keyboard::S)) 
+                {
+                    stopSpawning = !stopSpawning;
+                    stopSpawning ? std::cout << "Obstacle spawning is turned off" << std::endl : std::cout << "Obstacle spawning is turned on" << std::endl;
+                }
+                else if (backdoor && sf::Keyboard::isKeyPressed(sf::Keyboard::I))
+                {
+                    invulnerability = !invulnerability;
+                    invulnerability ? std::cout << "Invulnerability is turned on" << std::endl : std::cout << "Invulnerability is turned off" << std::endl;
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) // Turn on/off pause
                 {
-                    pauseCount++;
-                    if (pauseCount % 2 != 0)
-                    {
-                        gamePaused = true;
-                        if (backdoor)
-                            std::cout << "Game paused" << std::endl;
-                        music.pause();
-                    }
-                    else
-                    {
-                        gamePaused = false;
-                        if (backdoor)
-                            std::cout << "Game resumed" << std::endl;
-                        music.play();
-                    }
+                    gamePaused = !gamePaused;
+                    gamePaused ? music.pause() : music.play();
+                    gamePaused && backdoor ? std::cout << "Game paused" << std::endl : std::cout << "Game resumed" << std::endl;
+
                 }
                 player_.changeLane(playerDirection);
                 break;
@@ -115,16 +118,21 @@ void GameState::spawnObstacles()
 {
     if (!gamePaused)
     {
-        if (obstacleSpawnTimer_ < 30)
+        if (obstacleSpawnTimer_ < 800 / (constants::baseBackgroundMoveSpeed * speedMultiplier_) / 3)
         {
             obstacleSpawnTimer_++;
         } else
         {
-            auto obstacle = Obstacle::createObstacles(score_);
+            auto obstacle = createObstacles(score_);
             obstacles_.push_back(obstacle);
             obstacleSpawnTimer_ = 0;
         }
+    }
+}
 
+void GameState::moveObstacles() {
+    if (!gamePaused)
+    {
         for (auto i = 0; i < obstacles_.size(); i++)
         {
             auto obs = obstacles_.at(i);
@@ -170,11 +178,45 @@ void GameState::drawGame()
 
     for (auto i = 0; i < obstacles_.size(); i++)
     {
-        if (!backdoor)
+        if (!invulnerability)
         {
             if (Collision::PixelPerfectTest(player_.getPlayer(), obstacles_[i]->getObstacle()))
             {
-                player_.getHit(Player::Damage::HIT);
+                if (obstacles_[i]->type() == "obstacle") {
+                    dynamic_cast<Obstacle*>(obstacles_[i])->crashInToCar(player_);
+                    if (backdoor)
+                        std::cout << "Hit an obstacle! Minus " << obstacles_[i]->getDamage() << " damage" << std::endl;
+                }
+                else if (obstacles_[i]->type() == "cone") {
+                    dynamic_cast<Cone*>(obstacles_[i])->crashInToCar(player_);
+                    if (backdoor)
+                        std::cout << "Hit a cone! Minus " << obstacles_[i]->getDamage() << " damage" << std::endl;
+                }
+                else if (obstacles_[i]->type() == "baracade") {
+                    dynamic_cast<Baracade*>(obstacles_[i])->crashInToCar(player_);
+                    if (backdoor)
+                        std::cout << "Hit a baracade! Minus " << obstacles_[i]->getDamage() << " damage" << std::endl;
+                }
+                else if (obstacles_[i]->type() == "gasoline") {
+                    dynamic_cast<Gasoline*>(obstacles_[i])->crashInToCar(player_);
+                    if (backdoor)
+                        std::cout << "Hit a gasoline! Plus " << -obstacles_[i]->getDamage() << " health" << std::endl;
+                }
+                else if (obstacles_[i]->type() == "pothole") {
+                    dynamic_cast<Pothole*>(obstacles_[i])->crashInToCar(player_);
+                    if (backdoor)
+                        std::cout << "Hit a pothole! Minus " << obstacles_[i]->getDamage() << " health" << std::endl;
+                }
+                else if (obstacles_[i]->type() == "streetsign") {
+                    dynamic_cast<Streetsign*>(obstacles_[i])->crashInToCar(player_);
+                    if (backdoor)
+                        std::cout << "Hit a streetsign! Minus " << obstacles_[i]->getDamage() << " health" << std::endl;
+                }
+                else if (obstacles_[i]->type() == "trashcan") {
+                    dynamic_cast<Trashcan*>(obstacles_[i])->crashInToCar(player_);
+                    if (backdoor)
+                        std::cout << "Hit a trashcan! Minus " << obstacles_[i]->getDamage() << " health" << std::endl;
+                }
                 obstacles_.erase(obstacles_.begin() + i);
             } else
             {
@@ -203,4 +245,48 @@ GameState::~GameState()
 Score GameState::getFinalScore()
 {
     return score_;
+}
+Obstacle* GameState::createObstacles(Score& score)
+{
+    Obstacle* obstacle;
+
+    int odds = rand() % 100 + 1;
+    if (odds <= 5) 
+    {
+        obstacle = new Gasoline(score);
+        if(backdoor) std::cout << "Gasoline obstacle spawned" << std::endl;
+    }
+    else if (odds <= 5 + 10) 
+    {
+        obstacle = new Baracade(score);
+        if (backdoor) std::cout << "Baracade obstacle spawned" << std::endl;
+    }
+    else if (odds <= 5 + 10 + 10) 
+    {
+        obstacle = new Trashcan(score);
+        if (backdoor) std::cout << "Trashcan obstacle spawned" << std::endl;
+    }
+    else if (odds <= 5 + 10 + 10 + 5) 
+    {
+        obstacle = new Streetsign(score);
+        if (backdoor) std::cout << "Streetsign obstacle spawned" << std::endl;
+    }
+    else if (odds <= 5 + 10 + 10 + 5 + 30) 
+    {
+        obstacle = new Pothole(score);
+        if (backdoor) std::cout << "Pothole obstacle spawned" << std::endl;
+    }
+    else 
+    {
+        obstacle = new Cone(score);
+        if (backdoor) std::cout << "Cone obstacle spawned" << std::endl;
+    }
+    auto& obs = obstacle->getObstacle();
+
+    int lanePos = static_cast<int>(rand() % 4);
+
+    obs.setPosition(cs::targetX_[static_cast<int>(rand() % 4)], -50.f);
+
+
+    return obstacle;
 }

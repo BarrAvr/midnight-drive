@@ -23,8 +23,8 @@ void HealthScore::draw(sf::RenderWindow& window)
     }
 }
 
-void HealthScore::deductHealth()
-{
-    numberHearts_--;
+void HealthScore::deductHealth(int damage_level) {
+    if(numberHearts_ - damage_level <= cs::initialHearts){
+        numberHearts_ -= damage_level;
+    }
 }
-

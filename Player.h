@@ -22,7 +22,7 @@ public:
     void movePlayer(float speedMultiplier);
     void draw(sf::RenderWindow& window) override;
     sf::Sprite getPlayer();
-    void getHit(Damage dmg);
+    void getHit(Damage dmg, int damage_level = 1);
 
 private:
     sf::Sprite player_;
