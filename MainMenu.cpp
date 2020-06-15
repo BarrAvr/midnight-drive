@@ -2,10 +2,11 @@
 #include "Constants.h"
 #include "ControlMenu.h"
 #include "Screen.h"
+#include "NameInput.h"
 
 namespace cs = constants;
 
-MainMenu::MainMenu() : Screen()
+MainMenu::MainMenu() : Screen(), window_(sf::VideoMode(cs::WindowWidth_, cs::WindowHeight_), cs::MainMenuTitle)
 {
     //TODO: Implement file check
     if (!font.loadFromFile(cs::ResourcePath + cs::font))
@@ -36,7 +37,7 @@ MainMenu::MainMenu() : Screen()
     selectedItemIndex = 1;
 }
 
-void MainMenu::draw(sf::RenderWindow& window)
+void MainMenu::draw()
 {
 
     sf::Texture texture;
@@ -48,29 +49,14 @@ void MainMenu::draw(sf::RenderWindow& window)
     texture.setSmooth(false);
     sf::Sprite background(texture);
     background.setScale(cs::menuBgScaleX, cs::menuBgScaleY);
-    window.draw(background);
+    window_.draw(background);
 
     for (const auto& i : menuText)
     {
-        window.draw(i);
+        window_.draw(i);
     }
 }
 
-void MainMenu::addMusic()
-{
-    //need to implement file check stuff here
-    music.openFromFile(cs::ResourcePath + "background_music.wav");
-
-    //need to implement file check stuff here
-    carDriving.openFromFile(cs::ResourcePath + "car_start.wav");
-
-    //need to implement file check stuff here
-    buffer.loadFromFile(cs::ResourcePath + "button_select.wav");
-
-    button.setBuffer(buffer);
-
-    music.play();
-}
 
 void MainMenu::Move()
 {
@@ -89,33 +75,62 @@ void MainMenu::hoverSelected(int selection)
     selectedItemIndex = selection;
 }
 
-bool MainMenu::addMenu(sf::RenderWindow& window)
+bool MainMenu::startMenu()
 {
+    //need to implement file check stuff here
+    music.openFromFile(cs::ResourcePath + "car_start.wav");
+    music.setVolume(15);
+
+    //need to implement file check stuff here
+    //carDriving.openFromFile(cs::ResourcePath + "car_start.wav");
+
+    //need to implement file check stuff here
+    buffer.loadFromFile(cs::ResourcePath + "button_select.wav");
+
+    button.setBuffer(buffer);
+
+    music.play();
+
     //control menu
     ControlMenu controls{};
 
     bool showGame = false, showControls = false;
 
-    while (window.isOpen())
+    while (window_.isOpen())
     {
-        while (window.pollEvent(menuScreen))
+        while (window_.pollEvent(menuScreen))
         {
             //mouse functionality
-            double mouseX = sf::Mouse::getPosition(window).x;
-            double mouseY = sf::Mouse::getPosition(window).y;
-
+            double mouseX = sf::Mouse::getPosition(window_).x;
+            double mouseY = sf::Mouse::getPosition(window_).y;
 
             //for the main menu
             if (!showControls)
             {
-                //keep track of which menu option is hovered using arrow keys
-                if(menuScreen.type == sf::Event::KeyPressed)
+
+                if (menuScreen.type == sf::Event::TextEntered && menuScreen.text.unicode < 128)
                 {
-                    if (menuScreen.key.code == sf::Keyboard::Up || menuScreen.key.code == sf::Keyboard::Down)
-                    {
-                        button.play();
-                        Move();
-                    }
+                    int index = 0;
+                    if (menuScreen.key.code == sf::Keyboard::BackSpace && menuScreen.type == sf::Event::KeyReleased &&
+                        index > 0)
+                        index--;
+
+                    char buffer[5] = {0, 0, 0, 0, 0};
+                    buffer[index] = static_cast<char>(menuScreen.text.unicode);
+
+                    std::cout << buffer;
+                }
+
+                //keep track of which menu option is hovered using arrow keys
+                if (menuScreen.key.code == sf::Keyboard::Up && menuScreen.type == sf::Event::KeyReleased)
+                {
+                    button.play();
+                    Move();
+                }
+                if (menuScreen.key.code == sf::Keyboard::Down && menuScreen.type == sf::Event::KeyReleased)
+                {
+                    button.play();
+                    Move();
                 }
 
                 //which menu option is selected using enter key
@@ -126,16 +141,12 @@ bool MainMenu::addMenu(sf::RenderWindow& window)
                     else if (getSelectedItemIndex() == 2) //"entered" controls button
                         showControls = true;
                     else if (getSelectedItemIndex() == 3) //"entered" scoreboard button
-                        window.close();
-                        //TODO: Show scoreboard
-                        //showScoreboard = true
-                    else if (getSelectedItemIndex() == 4) //"entered" exit button
-                        window.close();
+                        window_.close();
 
                 }
                 //mouse hovering the play button
-                if ((mouseX > window.getSize().x * (.42) && mouseX < window.getSize().x * (.55)) &&
-                    ((mouseY > window.getSize().y / 3.8) && (mouseY < window.getSize().y / 2.7)))
+                if ((mouseX > window_.getSize().x * (.42) && mouseX < window_.getSize().x * (.55)) &&
+                    ((mouseY > window_.getSize().y / 3.8) && (mouseY < window_.getSize().y / 2.7)))
                 {
                     if (getSelectedItemIndex() != 1)//prevents music spam
                         button.play();
@@ -145,8 +156,8 @@ bool MainMenu::addMenu(sf::RenderWindow& window)
                         showGame = true;
 
                 }//hovering the controls button
-                else if ((mouseX > window.getSize().x * (.38) && mouseX < window.getSize().x * (.62)) &&
-                         ((mouseY > window.getSize().y / 2.6) && (mouseY < window.getSize().y / 2.05)))
+                else if ((mouseX > window_.getSize().x * (.38) && mouseX < window_.getSize().x * (.62)) &&
+                         ((mouseY > window_.getSize().y / 2.6) && (mouseY < window_.getSize().y / 2.05)))
                 {
                     if (getSelectedItemIndex() != 2) //prevents music spam
                         button.play();
@@ -155,32 +166,17 @@ bool MainMenu::addMenu(sf::RenderWindow& window)
                     if (menuScreen.type == sf::Event::MouseButtonReleased)//clicks the control button
                         showControls = true;
 
-                }//hovering the scoreboard button
-                else if ((mouseX > window.getSize().x * (.43) && mouseX < window.getSize().x * (.60)) &&
-                         ((mouseY > window.getSize().y / 2.0) && (mouseY < window.getSize().y / 1.63)))
-                {
-                        std::cout << "SCOREBOARD" << std::endl;
-                        if (getSelectedItemIndex() != 3)//prevents music spam
-                            button.play();
-
-                        hoverSelected(3);
-                        if (menuScreen.type == sf::Event::MouseButtonReleased)
-                        { //clicks the scoreboard button
-                           //set scoreboard to show
-                           window.close();
-                        }
                 }//hovering the exit button
-                else if ((mouseX > window.getSize().x * (.43) && mouseX < window.getSize().x * (.55)) &&
-                         ((mouseY > window.getSize().y / 1.9) && (mouseY < window.getSize().y / 1.2)))
+                else if ((mouseX > window_.getSize().x * (.43) && mouseX < window_.getSize().x * (.55)) &&
+                         ((mouseY > window_.getSize().y / 2.0) && (mouseY < window_.getSize().y / 1.63)))
                 {
-                    std::cout << "HERE" << std::endl;
-                    if (getSelectedItemIndex() != 4)//prevents music spam
+                    if (getSelectedItemIndex() != 3)//prevents music spam
                         button.play();
 
-                    hoverSelected(4);
+                    hoverSelected(3);
                     if (menuScreen.type == sf::Event::MouseButtonReleased)
                     { //clicks the exit button
-                        window.close();
+                        window_.close();
                         return false;
                     }
                 }
@@ -189,14 +185,12 @@ bool MainMenu::addMenu(sf::RenderWindow& window)
             //begin the game!
             if (showGame) //Implement the main game here
             {
-                std::cout << "The game has begun!" << std::endl;
                 return true;
             }
-
             //for the control menu
             if (showControls)
             {
-                if ((mouseX < window.getSize().x / 6.2) && (mouseY > window.getSize().y * (.85)))
+                if ((mouseX < window_.getSize().x / 6.2) && (mouseY > window_.getSize().y * (.85)))
                 {
                     if (!controls.getSelectedBack())
                         button.play();
@@ -216,26 +210,30 @@ bool MainMenu::addMenu(sf::RenderWindow& window)
                     showControls = false;
                 }
 
-                window.clear();
-                controls.draw(window);
-                window.display();
-
+                window_.clear();
+                controls.draw(window_);
+                window_.display();
             }
 
             if (!showControls)
             {
-                window.clear();
-                draw(window);
-                window.display();
+                window_.clear();
+                draw();
+                window_.display();
             }
 
             //if window is closed
             if (menuScreen.type == sf::Event::Closed)
             {
-                window.close();
+                window_.close();
                 return true;
             }
         }
     }
     return false;
+}
+
+MainMenu::~MainMenu()
+{
+    window_.close();
 }

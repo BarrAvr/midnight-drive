@@ -9,19 +9,24 @@ class MainMenu : public virtual Screen
 {
 private:
     sf::Event menuScreen{};
-    sf::Music music, carDriving;
+    sf::Music music;
     sf::SoundBuffer buffer;
     sf::Sound button;
     int selectedItemIndex = 0;
+    sf::RenderWindow window_;
 public:
     MainMenu();
-    ~MainMenu() = default;
-    void addMusic();
-    bool addMenu(sf::RenderWindow& window);
 
-    void draw(sf::RenderWindow& window) override;
+    ~MainMenu();
+
+    bool startMenu();
+
+    void draw();
+
     void Move();
+
     void hoverSelected(int selection) override;
 
-    int getSelectedItemIndex() const { return selectedItemIndex; }
+    int getSelectedItemIndex() const
+    { return selectedItemIndex; }
 };

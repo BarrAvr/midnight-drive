@@ -5,7 +5,6 @@ namespace cs = constants;
 
 ControlMenu::ControlMenu() : Screen()
 {
-
     //TODO: Implement file check
     if (!font.loadFromFile(cs::ResourcePath + cs::font))
     {}
@@ -21,7 +20,8 @@ ControlMenu::ControlMenu() : Screen()
         if (i == 0)
         {
             temp.setFillColor(cs::menuFillColor[i]);
-        } else {
+        } else
+        {
             temp.setFillColor(sf::Color::Black);
         }
         temp.setCharacterSize(cs::controlCharacterSize[i]);
@@ -29,7 +29,6 @@ ControlMenu::ControlMenu() : Screen()
         temp.setPosition(cs::controlPositions[i]);
         menuText.push_back(temp);
     }
-
     selectedBack = false;
 }
 
@@ -63,6 +62,5 @@ void ControlMenu::hoverSelected(int selection)
         selectedBack = false;
         menuText[4].setFillColor(cs::offHover.first);
         menuText[4].setOutlineThickness(cs::offHover.second);
-
     }
 }
