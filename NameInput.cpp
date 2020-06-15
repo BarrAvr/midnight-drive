@@ -6,7 +6,7 @@ namespace cs = constants;
 NameInput::NameInput()
 {
     //NEED TO IMPLEMENT FILE CHECK HERE!
-    if (!font.loadFromFile(constants::ResourcePath + "double_pixel-7.ttf"))
+    if (!font.loadFromFile(cs::ResourcePath + "double_pixel-7.ttf"))
     {
         //bad stuff happens
     }
@@ -102,7 +102,7 @@ void NameInput::draw(sf::RenderWindow& window)
     sf::Texture texture;
 
     //NEED TO IMPLEMENT FILE CHECK HERE!
-    if (!texture.loadFromFile(constants::ResourcePath + "pixel_background2.png"))
+    if (!texture.loadFromFile(cs::ResourcePath + "pixel_background2.png"))
     {
         //bad stuff happens
     }

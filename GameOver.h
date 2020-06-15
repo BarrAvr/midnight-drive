@@ -7,14 +7,19 @@
 class GameOver : public virtual Screen
 {
 private:
-    bool selectedExit;
+    bool selectedExit = false;
     std::vector<sf::Text> scoresLine;
     std::vector<sf::Text> line;
     sf::Event menuScreen{};
     sf::Sound button;
     sf::RenderWindow window_;
+    Scoreboard scoreboard;
+    Score newScore_;
+
 public:
-    GameOver();
+    GameOver() = default;
+
+    explicit GameOver(const Score& newScore);
 
     ~GameOver();
 
@@ -25,7 +30,9 @@ public:
     bool getSelectedExit() const
     { return selectedExit; }
 
-    void addScoresToScreen(Scoreboard& score);
+    void addScoresToScreen();
 
     void startGameOver();
+
+
 };

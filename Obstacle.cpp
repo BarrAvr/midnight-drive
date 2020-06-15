@@ -6,12 +6,12 @@
 
 namespace cs = constants;
 
-Obstacle::Obstacle()
+Obstacle::Obstacle(Score& score) : score_(score)
 {
-    const std::string path{constants::PATHS.at(rand() % constants::PATHS.size())};
-    assert(texture_.loadFromFile(constants::ResourcePath + path));
+    const std::string path{cs::PATHS.at(rand() % cs::PATHS.size())};
+    assert(texture_.loadFromFile(cs::ResourcePath + path));
 
-    obstacle_.setScale(sf::Vector2f(constants::obstacleSize, constants::obstacleSize));
+    obstacle_.setScale(sf::Vector2f(cs::obstacleSize, cs::obstacleSize));
     obstacle_.setTexture(texture_);
 }
 
@@ -20,14 +20,13 @@ sf::Sprite& Obstacle::getObstacle()
     return obstacle_;
 }
 
-void Obstacle::move(sf::RenderWindow& window, std::vector<Obstacle*>& obstacles, int i)
+void Obstacle::move(sf::RenderWindow& window, std::vector<Obstacle*>& obstacles, int i, float speedMultiplier)
 {
-
-    obstacle_.move(0.f, constants::obstacleMoveSpeed);
+    obstacle_.move(0.f, cs::baseObstacleMoveSpeed * speedMultiplier);
     if (obstacle_.getPosition().y > window.getSize().y)
     {
         obstacles.erase(obstacles.begin() + i);
-        score_ += 5;
+        score_.addToScore();
     }
 }
 
@@ -36,9 +35,9 @@ void Obstacle::draw(sf::RenderWindow& window)
     window.draw(obstacle_);
 }
 
-Obstacle* Obstacle::createObstacles(const size_t windowWidth)
+Obstacle* Obstacle::createObstacles(Score& score)
 {
-    auto obstacle = new Obstacle();
+    auto obstacle = new Obstacle(score);
     auto& obs = obstacle->getObstacle();
     obs.setPosition(cs::targetX_[static_cast<int>(rand() % 4)], -50.f);
 

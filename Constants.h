@@ -10,7 +10,7 @@ namespace constants
 {
     const std::string ResourcePath{"/home/dlieber/Downloads/Car_game_v4/"};
 
-    const std::array<std::string_view, 5> PATHS
+    const std::array<std::string, 5> PATHS
             {
                     "Trash can.png",
                     "Traffic cone.png",
@@ -27,7 +27,7 @@ namespace constants
     constexpr auto playerStartingPosX = 485;
     constexpr auto playerStartingPosY = 600;
 
-    const int targetX_[4] = { 340, 485, 635, 775 };
+    const int targetX_[4] = {342, 486, 634, 776};
 
     static const float playerSize = 5.0f;
     static const float obstacleSize = 5.0f;
@@ -81,7 +81,7 @@ namespace constants
 
     const int controlOutlineThickness = 3;
 
-    const std::vector<float> controlCharacterSize {100, 60, 60, 80, 80};
+    const std::vector<float> controlCharacterSize{100, 60, 60, 80, 80};
 
     const std::vector<sf::Vector2f> controlPositions
             {
@@ -94,21 +94,31 @@ namespace constants
 
     const std::vector<sf::Vector2f> heartPostitions
             {
-                sf::Vector2f(30, 30),
-                sf::Vector2f(80, 30),
-                sf::Vector2f(130, 30),
-                sf::Vector2f(180, 30),
-                sf::Vector2f(230, 30)
+                    sf::Vector2f(30, 30),
+                    sf::Vector2f(80, 30),
+                    sf::Vector2f(130, 30),
+                    sf::Vector2f(180, 30),
+                    sf::Vector2f(230, 30)
             };
 
     const std::int32_t hitDelay(3000);
 
-    const float obstacleMoveSpeed = 8.f;
-    const float backgroundMoveSpeed = 8.f;
+    const float baseObstacleMoveSpeed = 8.f;
+    const float baseBackgroundMoveSpeed = 8.f;
+    const float basePlayerMoveSpeed = 12.f;
 
     constexpr auto MainMenuTitle = "Midnight Drive : Main Menu";
     constexpr auto GameWindowTitle = "Midnight Drive";
     constexpr auto GameOverTitle = "Midnight Drive : Game Over";
 
     const int initialHearts = 5;
+
+    const std::string scoreboardPath = ResourcePath + "scores.txt";
+
+    const float pauseXscale = 2.0;
+    const float pauseYscale = 2.0;
+    const float pauseX = 30.0;
+    const float pauseY = 200.0;
+    const int pauseSize = 30;
+
 }

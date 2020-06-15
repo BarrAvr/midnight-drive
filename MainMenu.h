@@ -9,7 +9,7 @@ class MainMenu : public virtual Screen
 {
 private:
     sf::Event menuScreen{};
-    sf::Music music, carDriving;
+    sf::Music music;
     sf::SoundBuffer buffer;
     sf::Sound button;
     int selectedItemIndex = 0;

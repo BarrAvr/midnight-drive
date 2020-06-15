@@ -2,8 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 #include "HealthScore.h"
+#include "Drawable.h"
 
-class Player
+class Player : public virtual Drawable
 {
 public:
     enum class Movement {
@@ -18,15 +19,10 @@ public:
     explicit Player(HealthScore& healthScore);
     ~Player() = default;
     void changeLane(Movement playerDirection);
-    void movePlayer();
-    void draw(sf::RenderWindow& window);
+    void movePlayer(float speedMultiplier);
+    void draw(sf::RenderWindow& window) override;
     sf::Sprite getPlayer();
     void getHit(Damage dmg);
-
-    float getX() { return player_.getPosition().x; };
-    float getY() { return player_.getPosition().y; };
-    float getWidth() { return player_.getScale().x; };
-    float getHeight() { return player_.getScale().y; };
 
 private:
     sf::Sprite player_;

@@ -1,34 +1,28 @@
 #pragma once
-#ifndef SCOREBOARD_H
-#define SCOREBOARD_H
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
-
-using namespace std;
+#include "Score.h"
 
 class Scoreboard
 {
-
 public:
-    using Score = pair<int, string>;
-    Scoreboard() ;
+    using scorePair = std::pair<Score, std::string>;
+    Scoreboard();
 
-    void readScoresFromFile(const string& fileName);
-    void writeScoresToFile(const string& fileName);
+    void readScoresFromFile(const std::string& fileName);
+    void writeScoresToFile(const std::string& fileName);
 
     ~Scoreboard() = default;
-    void addScore(const Score&);
-    void addScore(int score, const string& name);
-    bool contains(int score, const std::string& name);
+    void addScore(const Score& score, const std::string& name);
+    bool contains(const Score& score, const std::string& name);
 
-    vector<Score> getScores() { return scores; }
-    friend ostream& operator<<(ostream& out, Scoreboard& s);
+    std::vector<scorePair> getScores() { return scores; }
+    friend std::ostream& operator<<(std::ostream& out, Scoreboard& s);
 
 private:
-    vector<Score> scores;
+    void addScore(const scorePair&);
+    std::vector<scorePair> scores;
 };
-
-#endif //SCOREBOARD_H

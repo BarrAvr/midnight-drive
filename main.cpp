@@ -22,6 +22,7 @@ int main()
 
         auto* game = new GameState();
         auto gameResult = game->runGame();
+        auto score = game->getFinalScore();
         delete game;
         switch (gameResult)
         {
@@ -29,7 +30,7 @@ int main()
                 continue;
             case GameState::GameResult::DIED:
             {
-                auto* gm = new GameOver();
+                auto* gm = new GameOver(score);
                 gm->startGameOver();
                 delete gm;
                 break;

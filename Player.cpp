@@ -1,17 +1,18 @@
 #include "Constants.h"
 #include "Player.h"
+namespace cs = constants;
 
 Player::Player(HealthScore& healthScore) : healthScore_(healthScore)
 {
     //TODO: Add file check
-    textureBlue_.loadFromFile(constants::ResourcePath + constants::carTexture);
-    textureRed_.loadFromFile(constants::ResourcePath + constants::carHitTexture);
+    textureBlue_.loadFromFile(cs::ResourcePath + cs::carTexture);
+    textureRed_.loadFromFile(cs::ResourcePath + cs::carHitTexture);
 
-    player_.setScale(sf::Vector2f(constants::playerSize, constants::playerSize));
+    player_.setScale(sf::Vector2f(cs::playerSize, cs::playerSize));
 
     player_.setTexture(textureBlue_);
 
-    player_.setPosition(sf::Vector2f(constants::playerStartingPosX, constants::playerStartingPosY));
+    player_.setPosition(sf::Vector2f(cs::playerStartingPosX, cs::playerStartingPosY));
 }
 
 void Player::changeLane(Player::Movement playerDirection)
@@ -35,19 +36,19 @@ void Player::changeLane(Player::Movement playerDirection)
     }
 }
 
-void Player::movePlayer()
+void Player::movePlayer(float speedMultiplier)
 {
     if (movingToLane_ != Player::Movement::NONE)
     {
         if (movingToLane_ == Player::Movement::LEFT)
         {
-            player_.move(sf::Vector2f(-10, 0));
+            player_.move(sf::Vector2f(-cs::basePlayerMoveSpeed, 0));
         } else
         {
-            player_.move(sf::Vector2f(10, 0));
+            player_.move(sf::Vector2f(cs::basePlayerMoveSpeed, 0));
         }
 
-        int targetPos = constants::targetX_[currentLane - 1];    // lane x-pos
+        int targetPos = cs::targetX_[currentLane - 1];    // lane x-pos
         int playerPos = player_.getPosition().x;
 
         // stop moving if car is in the correct lane
@@ -72,7 +73,7 @@ void Player::getHit(Damage dmg)
 {
     if (dmg == Damage::NOT_HIT)
     {
-        if (hitTimer_.getElapsedTime().asMilliseconds() > constants::hitDelay)
+        if (hitTimer_.getElapsedTime().asMilliseconds() > cs::hitDelay)
         {
             player_.setTexture(textureBlue_);
             gettingHit_ = Damage::NOT_HIT;

@@ -25,7 +25,7 @@ public:
 
     void typedOn(sf::Event input);
 
-    Score addScoreToFile(std::ostream& file);
+    static Score addScoreToFile(std::ostream& file);
 
     std::string getName();
 

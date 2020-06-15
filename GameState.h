@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "MainMenu.h"
 #include "HealthScore.h"
+#include "Score.h"
+#include "Scoreboard.h"
 #include <SFML/Graphics.hpp>
 
 class GameState
@@ -17,6 +19,8 @@ private:
     HealthScore health_ = HealthScore();
     Player player_ = Player(health_);
     Background background_ = Background();
+    Score score_ = Score();
+    float speedMultiplier_ = 1.0;
 
     void spawnObstacles();
     void drawGame();
@@ -30,5 +34,6 @@ public:
     explicit GameState();
     ~GameState();
     void handleEvent(sf::Event& event);
+    Score getFinalScore();
     GameResult runGame();
 };

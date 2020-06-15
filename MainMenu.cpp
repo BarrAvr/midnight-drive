@@ -78,11 +78,11 @@ void MainMenu::hoverSelected(int selection)
 bool MainMenu::startMenu()
 {
     //need to implement file check stuff here
-    music.openFromFile(cs::ResourcePath + "background_music.wav");
+    music.openFromFile(cs::ResourcePath + "car_start.wav");
     music.setVolume(15);
 
     //need to implement file check stuff here
-    carDriving.openFromFile(cs::ResourcePath + "car_start.wav");
+    //carDriving.openFromFile(cs::ResourcePath + "car_start.wav");
 
     //need to implement file check stuff here
     buffer.loadFromFile(cs::ResourcePath + "button_select.wav");

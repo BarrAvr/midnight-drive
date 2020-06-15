@@ -4,10 +4,12 @@
 
 namespace cs = constants;
 
-GameOver::GameOver() : window_(sf::VideoMode(cs::WindowWidth_, cs::WindowHeight_), cs::GameOverTitle)
+GameOver::GameOver(const Score& newScore) : window_(sf::VideoMode(cs::WindowWidth_, cs::WindowHeight_), cs::GameOverTitle), newScore_(newScore)
 {
+    scoreboard.readScoresFromFile(cs::scoreboardPath);
+    //TODO: file exception
     //NEED TO IMPLEMENT FILE CHECK HERE!
-    if (!font.loadFromFile(constants::ResourcePath + "double_pixel-7.ttf"))
+    if (!font.loadFromFile(cs::ResourcePath + "double_pixel-7.ttf"))
     {
         //bad stuff happens
     }
@@ -41,13 +43,12 @@ GameOver::GameOver() : window_(sf::VideoMode(cs::WindowWidth_, cs::WindowHeight_
     temp.setPosition(sf::Vector2f(cs::WindowWidth_ * .37, cs::WindowHeight_ * .8));
     line.push_back(temp);
 
-
     selectedExit = false;
 }
 
 
 //cant add in the default constructor because we read the score laterrr
-void GameOver::addScoresToScreen(Scoreboard& score)
+void GameOver::addScoresToScreen()
 {
     //FOR THE SCOREBOARD
     sf::Text temp;
@@ -65,13 +66,14 @@ void GameOver::addScoresToScreen(Scoreboard& score)
     temp.setCharacterSize(60);
     for (auto i = 0; i < 5; i++) //print out first column of scores;
     {
-        string scoreTemp;
-        if (!(score.getScores()[i].second == "-----"))
+        std::string scoreTemp;
+        if (scoreboard.getScores()[i].second == "-----")
             scoreTemp = "---";
         else
-            scoreTemp = to_string(score.getScores()[i].first);
-
-        string scoreLine = to_string(i + 1) + ". " + scoreTemp + " : " + score.getScores()[i].second;
+        {
+            scoreTemp = std::to_string(scoreboard.getScores()[i].first.getScore());
+        }
+        std::string scoreLine = std::to_string(i + 1) + ". " + scoreTemp + " : " + scoreboard.getScores()[i].second;
         temp.setString(scoreLine);
         temp.setPosition(sf::Vector2f(150, 270 + (i * 60)));
         scoresLine.push_back(temp);
@@ -79,13 +81,13 @@ void GameOver::addScoresToScreen(Scoreboard& score)
 
     for (auto i = 5; i < 10; i++) //print out second column of scores
     {
-        string scoreTemp;
-        if (!(score.getScores()[i].second == "-----"))
+        std::string scoreTemp;
+        if (scoreboard.getScores()[i].second == "-----")
             scoreTemp = "---";
         else
-            scoreTemp = to_string(score.getScores()[i].first);
+            scoreTemp = std::to_string(scoreboard.getScores()[i].first.getScore());
 
-        string scoreLine = to_string(i + 1) + ". " + scoreTemp + " : " + score.getScores()[i].second;
+        std::string scoreLine = std::to_string(i + 1) + ". " + scoreTemp + " : " + scoreboard.getScores()[i].second;
         temp.setString(scoreLine);
         if (i < 9)
             temp.setPosition(sf::Vector2f(600, 270 + ((i - 5) * 60)));
@@ -118,7 +120,7 @@ void GameOver::draw(sf::RenderWindow& window)
     sf::Texture texture;
 
     //NEED TO IMPLEMENT FILE CHECK HERE!
-    if (!texture.loadFromFile(constants::ResourcePath + "pixel_background2.png"))
+    if (!texture.loadFromFile(cs::ResourcePath + "pixel_background2.png"))
     {
         //bad stuff happens
     }
@@ -142,11 +144,6 @@ void GameOver::startGameOver()
 
     bool enterName = true;
 
-    //mouse functionality
-
-    //scoreboard
-    Scoreboard scores{};
-
     while (window_.isOpen())
     {
 
@@ -154,6 +151,11 @@ void GameOver::startGameOver()
         {
             double mouseX = sf::Mouse::getPosition(window_).x;
             double mouseY = sf::Mouse::getPosition(window_).y;
+
+            if (menuScreen.type == sf::Event::Closed)
+            {
+                window_.close();
+            }
 
             //here is after the game ends it goes into the name input screen, and then into the gameover
             //NAMEINPUT SCREEN
@@ -181,11 +183,10 @@ void GameOver::startGameOver()
 
                     if (menuScreen.type == sf::Event::MouseButtonReleased)
                     {
-                        enterName = false;
-
                         //EXAMPLE ADDING A SCORE
-                        scores.addScore(60, nameInput.getName());
-                        addScoresToScreen(scores);
+                        scoreboard.addScore(newScore_, nameInput.getName());
+                        addScoresToScreen();
+                        enterName = false;
                     }
                 } else
                 {
@@ -195,11 +196,10 @@ void GameOver::startGameOver()
                 //for enter key functionality
                 if (menuScreen.key.code == sf::Keyboard::Return && menuScreen.type == sf::Event::KeyReleased)
                 {
-                    enterName = false;
-
                     //EXAMPLE ADDING A SCORE
-                    scores.addScore(60, nameInput.getName());
-                    addScoresToScreen(scores);
+                    scoreboard.addScore(newScore_, nameInput.getName());
+                    addScoresToScreen();
+                    enterName = false;
                 }
 
                 window_.clear();
@@ -210,7 +210,7 @@ void GameOver::startGameOver()
             if (!enterName)
             {
                 //GAMEOVERSCREEN ONCE ENTERED PRESSED FOR NAME INPUT
-                if ((mouseX > window_.getSize().x * .35 && mouseX < window_.getSize().x * .64) &&
+                if ((mouseX > window_.getSize().x * .35 && mouseX < window_.getSize().x * .9) &&
                     (mouseY > window_.getSize().y * .8 && mouseY < window_.getSize().y * .91))
                 {
                     if (!getSelectedExit())
@@ -236,5 +236,6 @@ void GameOver::startGameOver()
 
 GameOver::~GameOver()
 {
+    scoreboard.writeScoresToFile(cs::scoreboardPath);
     window_.close();
 }
