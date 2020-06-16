@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "Scoreboard.h"
 #include "FileNotFound.h"
+#include "Constants.h"
 
 namespace cs = constants;
 

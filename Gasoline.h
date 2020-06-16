@@ -4,8 +4,8 @@
 class Gasoline : public Obstacle
 {
 private:
-    void makeCrashSound();
+    void makeCrashSound() override;
 public:
     Gasoline(Score& score);
-    std::string type() const { return "gasoline"; }
+    std::string type() const override { return "gasoline"; }
 };

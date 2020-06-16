@@ -4,8 +4,8 @@
 class Pothole : public Obstacle
 {
 private:
-    void makeCrashSound();
+    void makeCrashSound() override;
 public:
     Pothole(Score& score);
-    std::string type() const { return "pothole"; }
+    std::string type() const override { return "pothole"; }
 };

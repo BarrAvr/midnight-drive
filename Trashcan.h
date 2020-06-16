@@ -4,8 +4,8 @@
 class Trashcan : public Obstacle
 {
 private:
-    void makeCrashSound();
+    void makeCrashSound() override;
 public:
     Trashcan(Score& score);
-    std::string type() const { return "trashcan"; }
+    std::string type() const override { return "trashcan"; }
 };

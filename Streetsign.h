@@ -4,8 +4,8 @@
 class Streetsign : public Obstacle
 {
 private:
-    void makeCrashSound();
+    void makeCrashSound() override;
 public:
     Streetsign(Score& score);
-    std::string type() const { return "streetsign"; }
+    std::string type() const override { return "streetsign"; }
 };

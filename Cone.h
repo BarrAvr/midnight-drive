@@ -4,8 +4,8 @@
 class Cone : public Obstacle
 {
 private:
-    void makeCrashSound();
+    void makeCrashSound() override;
 public:
     Cone(Score& score);
-    std::string type() const { return "cone"; }
+    std::string type() const override { return "cone"; }
 };
