@@ -1,17 +1,28 @@
 #include "GameOver.h"
-#include "Constants.h"
 #include "NameInput.h"
+#include "FileNotFound.h"
+#include "Constants.h"
 
 namespace cs = constants;
 
-GameOver::GameOver(const Score& newScore) : window_(sf::VideoMode(cs::WindowWidth_, cs::WindowHeight_), cs::GameOverTitle), newScore_(newScore)
+GameOver::GameOver(const Score& newScore) : gameoverWindow(sf::VideoMode(cs::WINDOW_WIDTH, cs::WINDOW_HEIGHT), cs::GAME_OVER_TITLE), newScore(newScore)
 {
-    scoreboard.readScoresFromFile(cs::scoreboardPath);
-    //TODO: file exception
-    //NEED TO IMPLEMENT FILE CHECK HERE!
-    if (!font.loadFromFile(cs::ResourcePath + "double_pixel-7.ttf"))
+    scoreboard.readScoresFromFile(cs::SCOREBOARD_PATH);
+
+    std::string fontPath = cs::RESOURCE_PATH + cs::FONT;
+    while (!font.loadFromFile(fontPath))
     {
-        //bad stuff happens
+        try
+        {
+            throw FileNotFound("Game Font");
+        }
+        catch (FileNotFound e)
+        {
+            std::cout << e.what();
+            fontPath = e.resolve();
+            if (fontPath == "")
+                break;
+        }
     }
 
     sf::Text temp;
@@ -23,7 +34,7 @@ GameOver::GameOver(const Score& newScore) : window_(sf::VideoMode(cs::WindowWidt
     temp.setStyle(sf::Text::Bold);
     temp.setCharacterSize(120);
     temp.setString("GAME OVER");
-    temp.setPosition(sf::Vector2f(cs::WindowWidth_ * .28, 50));
+    temp.setPosition(sf::Vector2f(cs::WINDOW_WIDTH * .28, 50));
     line.push_back(temp);
 
     temp.setOutlineThickness(3);
@@ -33,26 +44,22 @@ GameOver::GameOver(const Score& newScore) : window_(sf::VideoMode(cs::WindowWidt
     temp.setStyle(sf::Text::Underlined);
     temp.setCharacterSize(80);
     temp.setString("Leader Boards:");
-    temp.setPosition(sf::Vector2f(cs::WindowWidth_ * .1, 180));
+    temp.setPosition(sf::Vector2f(cs::WINDOW_WIDTH * .1, 180));
     line.push_back(temp);
 
 
     temp.setStyle(sf::Text::Regular);
     temp.setStyle(sf::Text::Bold);
     temp.setString("Exit Game");
-    temp.setPosition(sf::Vector2f(cs::WindowWidth_ * .37, cs::WindowHeight_ * .8));
+    temp.setPosition(sf::Vector2f(cs::WINDOW_WIDTH * .37, cs::WINDOW_HEIGHT * .8));
     line.push_back(temp);
 
     selectedExit = false;
 }
 
-
-//cant add in the default constructor because we read the score laterrr
 void GameOver::addScoresToScreen()
 {
-    //FOR THE SCOREBOARD
     sf::Text temp;
-
     temp.setFont(font);
     temp.setOutlineThickness(3);
     temp.setOutlineColor(sf::Color::White);
@@ -62,13 +69,16 @@ void GameOver::addScoresToScreen()
     temp.setString("GAME OVER");
     temp.setPosition(sf::Vector2f(280, 50));
     line.push_back(temp);
-
     temp.setCharacterSize(60);
-    for (auto i = 0; i < 5; i++) //print out first column of scores;
+
+    // Print out first column of scores
+    for (auto i = 0; i < 5; i++)
     {
         std::string scoreTemp;
         if (scoreboard.getScores()[i].second == "-----")
+        {
             scoreTemp = "---";
+        }
         else
         {
             scoreTemp = std::to_string(scoreboard.getScores()[i].first.getScore());
@@ -79,24 +89,32 @@ void GameOver::addScoresToScreen()
         scoresLine.push_back(temp);
     }
 
-    for (auto i = 5; i < 10; i++) //print out second column of scores
+    // Print out second column of scores
+    for (auto i = 5; i < 10; i++)
     {
         std::string scoreTemp;
         if (scoreboard.getScores()[i].second == "-----")
+        {
             scoreTemp = "---";
+        }
         else
+        {
             scoreTemp = std::to_string(scoreboard.getScores()[i].first.getScore());
+        }
 
         std::string scoreLine = std::to_string(i + 1) + ". " + scoreTemp + " : " + scoreboard.getScores()[i].second;
         temp.setString(scoreLine);
         if (i < 9)
+        {
             temp.setPosition(sf::Vector2f(600, 270 + ((i - 5) * 60)));
+        }
         else
+        {
             temp.setPosition(sf::Vector2f(580, 270 + ((i - 5) * 60)));
+        }
 
         scoresLine.push_back(temp);
     }
-
 }
 
 void GameOver::hoverSelected(int selection)
@@ -107,7 +125,8 @@ void GameOver::hoverSelected(int selection)
         line[2].setOutlineThickness(4);
         line[2].setFillColor(sf::Color::Blue);
 
-    } else
+    }
+    else
     {
         selectedExit = false;
         line[2].setOutlineThickness(3);
@@ -118,11 +137,20 @@ void GameOver::hoverSelected(int selection)
 void GameOver::draw(sf::RenderWindow& window)
 {
     sf::Texture texture;
-
-    //NEED TO IMPLEMENT FILE CHECK HERE!
-    if (!texture.loadFromFile(cs::ResourcePath + "pixel_background2.png"))
+    std::string texturePath = cs::RESOURCE_PATH + cs::MENU_BACKGROUND2;
+    while (!texture.loadFromFile(texturePath))
     {
-        //bad stuff happens
+        try
+        {
+            throw FileNotFound("Pixel Background 2 Texture");
+        }
+        catch (FileNotFound e)
+        {
+            std::cout << e.what();
+            texturePath = e.resolve();
+            if (texturePath == "")
+                break;
+        }
     }
 
     sf::Sprite background(texture);
@@ -134,46 +162,44 @@ void GameOver::draw(sf::RenderWindow& window)
     window.draw(line[2]);
 
     for (auto i = 0; i < 10; i++)
+    {
         window.draw(scoresLine[i]);
+    }
 }
 
+// Name Entry
 void GameOver::startGameOver()
 {
-    // name input
     NameInput nameInput{};
-
     bool enterName = true;
 
-    while (window_.isOpen())
+    while (gameoverWindow.isOpen())
     {
-
-        while (window_.pollEvent(menuScreen))
+        while (gameoverWindow.pollEvent(menuScreen))
         {
-            double mouseX = sf::Mouse::getPosition(window_).x;
-            double mouseY = sf::Mouse::getPosition(window_).y;
+            double mouseX = sf::Mouse::getPosition(gameoverWindow).x;
+            double mouseY = sf::Mouse::getPosition(gameoverWindow).y;
 
             if (menuScreen.type == sf::Event::Closed)
             {
-                window_.close();
+                gameoverWindow.close();
             }
 
-            //here is after the game ends it goes into the name input screen, and then into the gameover
-            //NAMEINPUT SCREEN
+            // Input Screen
             if (enterName)
             {
                 if (menuScreen.type == sf::Event::Closed)
                 {
-                    window_.close();
+                    gameoverWindow.close();
                 }
-
                 if (menuScreen.type == sf::Event::TextEntered)
                 {
                     nameInput.typedOn(menuScreen);
                 }
 
-                //for mouse functionality
-                if ((mouseX > window_.getSize().x * .38 && mouseX < window_.getSize().x * .63) &&
-                    (mouseY > window_.getSize().y * .57 && mouseY < window_.getSize().y * .66))
+                // for mouse functionality
+                if ((mouseX > gameoverWindow.getSize().x * .38 && mouseX < gameoverWindow.getSize().x * .63) &&
+                    (mouseY > gameoverWindow.getSize().y * .57 && mouseY < gameoverWindow.getSize().y * .66))
                 {
                     if (!nameInput.getContinueSelected())
                     {
@@ -183,35 +209,34 @@ void GameOver::startGameOver()
 
                     if (menuScreen.type == sf::Event::MouseButtonReleased)
                     {
-                        //EXAMPLE ADDING A SCORE
-                        scoreboard.addScore(newScore_, nameInput.getName());
+                        scoreboard.addScore(newScore, nameInput.getName());
                         addScoresToScreen();
                         enterName = false;
                     }
-                } else
+                }
+                else
                 {
                     nameInput.hoverSelected(0);
                 }
 
-                //for enter key functionality
+                // for enter key functionality
                 if (menuScreen.key.code == sf::Keyboard::Return && menuScreen.type == sf::Event::KeyReleased)
                 {
-                    //EXAMPLE ADDING A SCORE
-                    scoreboard.addScore(newScore_, nameInput.getName());
+                    scoreboard.addScore(newScore, nameInput.getName());
                     addScoresToScreen();
                     enterName = false;
                 }
 
-                window_.clear();
-                nameInput.draw(window_);
-                window_.display();
+                gameoverWindow.clear();
+                nameInput.draw(gameoverWindow);
+                gameoverWindow.display();
             }
 
+            // User has submitted name
             if (!enterName)
             {
-                //GAMEOVERSCREEN ONCE ENTERED PRESSED FOR NAME INPUT
-                if ((mouseX > window_.getSize().x * .35 && mouseX < window_.getSize().x * .9) &&
-                    (mouseY > window_.getSize().y * .8 && mouseY < window_.getSize().y * .91))
+                if ((mouseX > gameoverWindow.getSize().x * .35 && mouseX < gameoverWindow.getSize().x * .9) &&
+                    (mouseY > gameoverWindow.getSize().y * .8 && mouseY < gameoverWindow.getSize().y * .91))
                 {
                     if (!getSelectedExit())
                     {
@@ -221,14 +246,17 @@ void GameOver::startGameOver()
                     hoverSelected(1);
                     if (menuScreen.type == sf::Event::MouseButtonReleased)
                     {
-                        window_.close();
+                        gameoverWindow.close();
                     }
-                } else
+                }
+                else
+                {
                     hoverSelected(0);
+                }
 
-                window_.clear();
-                draw(window_);
-                window_.display();
+                gameoverWindow.clear();
+                draw(gameoverWindow);
+                gameoverWindow.display();
             }
         }
     }
@@ -236,6 +264,6 @@ void GameOver::startGameOver()
 
 GameOver::~GameOver()
 {
-    scoreboard.writeScoresToFile(cs::scoreboardPath);
-    window_.close();
+    scoreboard.writeScoresToFile(cs::SCOREBOARD_PATH);
+    gameoverWindow.close();
 }

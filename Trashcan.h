@@ -1,13 +1,11 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 #include "Obstacle.h"
 
-
-class Trashcan : public Obstacle {
+class Trashcan : public Obstacle
+{
 private:
-	void makeCrashSound();
+    void makeCrashSound();
 public:
-	Trashcan(Score& score);
-	std::string type() const { return "trashcan"; };
+    Trashcan(Score& score);
+    std::string type() const { return "trashcan"; }
 };

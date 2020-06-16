@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -12,11 +11,6 @@ protected:
     std::vector<sf::Text> menuText;
 public:
     Screen() = default;
-    virtual void draw(sf::RenderWindow& window) {};
-    virtual void hoverSelected(int selection) {};
+    virtual void draw(sf::RenderWindow& window) {}
+    virtual void hoverSelected(int selection) {}
 };
-
-
-
-
-

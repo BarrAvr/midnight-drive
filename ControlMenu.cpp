@@ -1,32 +1,43 @@
-#include "Constants.h"
 #include "ControlMenu.h"
+#include "FileNotFound.h"
+#include "Constants.h"
 
 namespace cs = constants;
 
 ControlMenu::ControlMenu() : Screen()
 {
-    //TODO: Implement file check
-    if (!font.loadFromFile(cs::ResourcePath + cs::font))
-    {}
+    std::string fontPath = cs::RESOURCE_PATH + cs::FONT;
+    while (!font.loadFromFile(fontPath))
+    {
+        try { throw FileNotFound("Game Font"); }
+        catch (FileNotFound e)
+        {
+            std::cout << e.what();
+            fontPath = e.resolve();
+            if (fontPath == "")
+                break;
+        }
+    }
 
     sf::Text temp;
     temp.setFont(font);
     temp.setOutlineColor(sf::Color::White);
-    temp.setOutlineThickness(cs::controlOutlineThickness);
+    temp.setOutlineThickness(cs::CONTROL_OUTLINE_THICKNESS);
     temp.setStyle(sf::Text::Bold);
 
-    for (auto i = 0; i < cs::controlStrings.size(); i++)
+    for (auto i = 0; i < cs::CONTROL_STRINGS.size(); i++)
     {
         if (i == 0)
         {
-            temp.setFillColor(cs::menuFillColor[i]);
-        } else
+            temp.setFillColor(cs::MENU_FILL_COLOR[i]);
+        }
+        else
         {
             temp.setFillColor(sf::Color::Black);
         }
-        temp.setCharacterSize(cs::controlCharacterSize[i]);
-        temp.setString(cs::controlStrings[i]);
-        temp.setPosition(cs::controlPositions[i]);
+        temp.setCharacterSize(cs::CONTROL_CHARACTER_SIZE[i]);
+        temp.setString(cs::CONTROL_STRINGS[i]);
+        temp.setPosition(cs::CONTROL_POSITIONS[i]);
         menuText.push_back(temp);
     }
     selectedBack = false;
@@ -36,12 +47,21 @@ void ControlMenu::draw(sf::RenderWindow& window)
 {
     sf::Texture texture;
 
-    //TODO: Implement file check
-    if (!texture.loadFromFile(cs::ResourcePath + cs::menuBackground))
-    {}
+    std::string texturePath = cs::RESOURCE_PATH + cs::MENU_BACKGROUND;
+    while (!texture.loadFromFile(texturePath))
+    {
+        try { throw FileNotFound("Menu Background"); }
+        catch (FileNotFound e)
+        {
+            std::cout << e.what();
+            texturePath = e.resolve();
+            if (texturePath == "")
+                break;
+        }
+    }
 
     sf::Sprite background(texture);
-    background.setScale(cs::menuBgScaleX, cs::menuBgScaleY);
+    background.setScale(cs::MENU_BG_SCALE_X, cs::MENU_BG_SCALE_Y);
     window.draw(background);
 
     for (const auto& i : menuText)
@@ -55,12 +75,13 @@ void ControlMenu::hoverSelected(int selection)
     if (selection)
     {
         selectedBack = true;
-        menuText[4].setFillColor(cs::onHover.first);
-        menuText[4].setOutlineThickness(cs::onHover.second);
-    } else
+        menuText[4].setFillColor(cs::HOVER_ON_COLOR.first);
+        menuText[4].setOutlineThickness(cs::HOVER_ON_COLOR.second);
+    }
+    else
     {
         selectedBack = false;
-        menuText[4].setFillColor(cs::offHover.first);
-        menuText[4].setOutlineThickness(cs::offHover.second);
+        menuText[4].setFillColor(cs::HOVER_OFF_COLOR.first);
+        menuText[4].setOutlineThickness(cs::HOVER_OFF_COLOR.second);
     }
 }

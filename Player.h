@@ -1,5 +1,4 @@
 #pragma once
-
 #include <SFML/Graphics.hpp>
 #include "HealthScore.h"
 #include "Drawable.h"
@@ -7,12 +6,14 @@
 class Player : public virtual Drawable
 {
 public:
-    enum class Movement {
+    enum class Movement
+    {
         NONE,
         LEFT,
         RIGHT,
     };
-    enum class Damage {
+    enum class Damage
+    {
         HIT,
         NOT_HIT,
     };
@@ -26,12 +27,12 @@ public:
 
 private:
     sf::Sprite player_;
-    sf::Texture textureBlue_;
-    sf::Texture textureRed_;
+    sf::Texture textureBlue;
+    sf::Texture textureRed;
     int currentLane = 2;
-    Movement movingToLane_ = Movement::NONE;
-    Damage gettingHit_ = Damage::NOT_HIT;
-    sf::Clock hitTimer_;
-    HealthScore& healthScore_;
+    Movement movingToLane = Movement::NONE;
+    Damage gettingHit = Damage::NOT_HIT;
+    sf::Clock hitTimer;
+    HealthScore& healthScore;
 
 };

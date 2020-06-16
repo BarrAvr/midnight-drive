@@ -27,7 +27,9 @@ int main()
         switch (gameResult)
         {
             case GameState::GameResult::RAGEQUIT:
+            {
                 continue;
+            }
             case GameState::GameResult::DIED:
             {
                 auto* gm = new GameOver(score);

@@ -1,23 +1,49 @@
 #include "Streetsign.h"
+#include "FileNotFound.h"
 #include "Constants.h"
 
 Streetsign::Streetsign(Score& score) : Obstacle(score, 3) 
 {
-    if (!texture_.loadFromFile(constants::ResourcePath + constants::PATHS[5])) {
-        throw "Streetsign Image Not Found";
+    std::string texturePath = cs::RESOURCE_PATH + cs::OBSTACLE_FILENAMES[5];
+    while (!obstacleTexture.loadFromFile(texturePath))
+    {
+        try { throw FileNotFound("Streetsign Texture"); }
+        catch (FileNotFound e)
+        {
+            std::cout << e.what();
+            texturePath = e.resolve();
+            if (texturePath == "")
+                break;
+        }
     }
-    obstacle_.setScale(sf::Vector2f(cs::obstacleSize, cs::obstacleSize));
-    obstacle_.setTexture(texture_);
-    if (!crashBuffer.loadFromFile(constants::ResourcePath + constants::BigCrashSound)) {
-        throw "Streetsign crash sound Not Found";
+    obstacle.setScale(sf::Vector2f(cs::OBSTACLE_SIZE, cs::OBSTACLE_SIZE));
+    obstacle.setTexture(obstacleTexture);
+
+    std::string sfxPath = cs::RESOURCE_PATH + cs::BIG_CRASH_SFX;
+    while (!crashBuffer.loadFromFile(sfxPath))
+    {
+        try
+        {
+            crashSound.setBuffer(crashBuffer);
+            throw FileNotFound("Big crash sound");
+        }
+        catch (FileNotFound e)
+        {
+            std::cout << e.what();
+            sfxPath = e.resolve();
+            if (sfxPath == "")
+                break;
+        }
     }
     crashSound.setBuffer(crashBuffer);
 }
 
-
 void Streetsign::makeCrashSound() 
 {
-    crashSound.setVolume(50);
-    crashSound.setPitch(crashSound.getPitch() * 0.5);
-    crashSound.play();
+    if (crashSound.getBuffer() != NULL)
+    {
+        crashSound.setVolume(50);
+        crashSound.setPitch(crashSound.getPitch() * 0.5);
+        crashSound.play();
+    }
 }

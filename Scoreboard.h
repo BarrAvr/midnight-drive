@@ -1,7 +1,4 @@
 #pragma once
-
-#include <iostream>
-#include <string>
 #include <vector>
 #include <fstream>
 #include "Score.h"
@@ -9,13 +6,12 @@
 class Scoreboard
 {
 public:
-    using scorePair = std::pair<Score, std::string>;
     Scoreboard();
+    ~Scoreboard() = default;
+    using scorePair = std::pair<Score, std::string>;
 
     void readScoresFromFile(const std::string& fileName);
     void writeScoresToFile(const std::string& fileName);
-
-    ~Scoreboard() = default;
     void addScore(const Score& score, const std::string& name);
     bool contains(const Score& score, const std::string& name);
 
@@ -23,6 +19,6 @@ public:
     friend std::ostream& operator<<(std::ostream& out, Scoreboard& s);
 
 private:
-    void addScore(const scorePair&);
     std::vector<scorePair> scores;
+    void addScore(const scorePair&);
 };

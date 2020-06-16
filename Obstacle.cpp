@@ -1,36 +1,24 @@
 #include <array>
-#include <cassert>
 #include "Constants.h"
-#include <string_view>
 #include "Obstacle.h"
-#include "Player.h"
+#include "Drawable.h"
 
 namespace cs = constants;
 
-
-
-
-Obstacle::Obstacle(Score& score, int damage_level) : score_(score), damage_level(damage_level)
-{
-    //do nothing
-}
-
-sf::Sprite& Obstacle::getObstacle()
-{
-    return obstacle_;
-}
+Obstacle::Obstacle(Score& score, int damage_level) : score(score), damageLevel(damage_level)
+{}
 
 void Obstacle::move(sf::RenderWindow& window, std::vector<Obstacle*>& obstacles, int i, float speedMultiplier)
 {
-    obstacle_.move(0.f, cs::baseObstacleMoveSpeed * speedMultiplier);
-    if (obstacle_.getPosition().y > window.getSize().y)
+    obstacle.move(0.f, cs::BASE_OBSTACLE_MOVE_SPEED * speedMultiplier);
+    if (obstacle.getPosition().y > window.getSize().y)
     {
         obstacles.erase(obstacles.begin() + i);
-        score_.addToScore();
+        score.addToScore();
     }    
 }
 
 void Obstacle::draw(sf::RenderWindow& window)
 {
-    window.draw(obstacle_);
+    window.draw(obstacle);
 }

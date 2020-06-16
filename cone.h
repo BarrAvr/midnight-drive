@@ -1,12 +1,11 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include "Obstacle.h"
 
-
-class Cone : public Obstacle {
+class Cone : public Obstacle
+{
 private:
-	void makeCrashSound();
+    void makeCrashSound();
 public:
-	Cone(Score& score);
-	std::string type() const { return "cone"; };
+    Cone(Score& score);
+    std::string type() const { return "cone"; }
 };

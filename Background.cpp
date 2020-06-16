@@ -1,3 +1,7 @@
+#include <SFML/Graphics.hpp>
+#include <string>
+#include <vector>
+#include "FileNotFound.h"
 #include "Background.h"
 #include "Constants.h"
 
@@ -5,33 +9,47 @@ namespace cs = constants;
 
 Background::Background()
 {
-    background1_.setSize(sf::Vector2f(cs::WindowWidth_, cs::WindowHeight_ + 40));
-    background2_.setSize(sf::Vector2f(cs::WindowWidth_, cs::WindowHeight_ + 40));
-    bgTexture1.loadFromFile(cs::ResourcePath + cs::background_);
-    background1_.setTexture(&bgTexture1);
+    background1.setSize(sf::Vector2f(cs::WINDOW_WIDTH, cs::WINDOW_HEIGHT + 40));
+    background2.setSize(sf::Vector2f(cs::WINDOW_WIDTH, cs::WINDOW_HEIGHT + 40));
 
-    bgTexture2.loadFromFile(cs::ResourcePath + cs::background_);
-    background2_.setTexture(&bgTexture2);
-    background2_.setPosition(sf::Vector2f(0, -cs::WindowHeight_));
+    std::string texturePath = cs::RESOURCE_PATH + cs::BACKGROUND;
+    while (!bgTexture.loadFromFile(texturePath))
+    {
+        try { throw FileNotFound("Background texture\n"); }
+        catch (FileNotFound e)
+        {
+            texturePath = e.resolve();
+            if (texturePath == "")
+                break;
+        }
+    }
+
+    background1.setTexture(&bgTexture);
+    background2.setTexture(&bgTexture);
+    background2.setPosition(sf::Vector2f(0, -cs::WINDOW_HEIGHT));
 }
 
+// Background Scrolling
 void Background::changeBackground(sf::RenderWindow& window, float speedMultiplier)
 {
-    
-    //Scrolling background
-    if(background1_.getPosition().y < window.getSize().y || background2_.getPosition().y < window.getSize().y)
+    if(background1.getPosition().y < window.getSize().y || background2.getPosition().y < window.getSize().y)
     {
-        background1_.move(sf::Vector2f(0, cs::baseBackgroundMoveSpeed * speedMultiplier));
-        background2_.move(sf::Vector2f(0, cs::baseBackgroundMoveSpeed * speedMultiplier));
-        if(background1_.getPosition().y >= 780)
-            background1_.setPosition(sf::Vector2f(0, -800));
-        if(background2_.getPosition().y >= 780)
-            background2_.setPosition(sf::Vector2f(0, -800));
+        background1.move(sf::Vector2f(0, cs::BASE_BACKGROUND_MOVE_SPEED * speedMultiplier));
+        background2.move(sf::Vector2f(0, cs::BASE_BACKGROUND_MOVE_SPEED * speedMultiplier));
+
+        if (background1.getPosition().y >= 780)
+        {
+            background1.setPosition(sf::Vector2f(0, -800));
+        } 
+        if (background2.getPosition().y >= 780)
+        {
+            background2.setPosition(sf::Vector2f(0, -800));
+        }
     }
 }
 
 void Background::draw(sf::RenderWindow& window)
 {
-    window.draw(background1_);
-    window.draw(background2_);
+    window.draw(background1);
+    window.draw(background2);
 }

@@ -1,22 +1,44 @@
-#include "gasoline.h"
+#include "Gasoline.h"
+#include "FileNotFound.h"
 #include "Constants.h"
 
 Gasoline::Gasoline(Score& score) : Obstacle(score, -1) 
 {
-    if (!texture_.loadFromFile(cs::ResourcePath + cs::PATHS[3])) {
-
-        throw "Gasoline Image Not Found";
+    std::string texturePath = cs::RESOURCE_PATH + cs::OBSTACLE_FILENAMES[3];
+    while (!obstacleTexture.loadFromFile(texturePath))
+    {
+        try { throw FileNotFound("Gasoline Texture"); }
+        catch (FileNotFound e)
+        {
+            std::cout << e.what();
+            texturePath = e.resolve();
+            if (texturePath == "")
+                break;
+        }
     }
+    obstacle.setScale(sf::Vector2f(cs::OBSTACLE_SIZE, cs::OBSTACLE_SIZE));
+    obstacle.setTexture(obstacleTexture);
 
-    obstacle_.setScale(sf::Vector2f(cs::obstacleSize, cs::obstacleSize));
-    obstacle_.setTexture(texture_);
-    if (!crashBuffer.loadFromFile(constants::ResourcePath + constants::GasCrashSound)) {
-        throw "Gasoline crash sound Not Found";
+    std::string sfxPath = cs::RESOURCE_PATH + cs::GAS_CRASH_SOUND;
+    while (!crashBuffer.loadFromFile(sfxPath))
+    {
+        try
+        {
+            crashSound.setBuffer(crashBuffer);
+            throw FileNotFound("Gas crash sound");
+        }
+        catch (FileNotFound e)
+        {
+            std::cout << e.what();
+            sfxPath = e.resolve();
+            if (sfxPath == "")
+                break;
+        }
     }
     crashSound.setBuffer(crashBuffer);
 }
 
-
-void Gasoline::makeCrashSound() {
+void Gasoline::makeCrashSound()
+{
     crashSound.play();
 }

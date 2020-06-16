@@ -1,30 +1,30 @@
 #include "HealthScore.h"
 
-namespace cs = constants;
-
 HealthScore::HealthScore()
 {
-    texture_.loadFromFile(cs::ResourcePath + cs::lifeTexture);
-    for (auto i = 0; i < numberHearts_; i++)
+    texture.loadFromFile(cs::RESOURCE_PATH + cs::LIFE_TEXTURE);
+    for (auto i = 0; i < numHearts; i++)
     {
         sf::RectangleShape heart;
-        heart.setSize(sf::Vector2f(cs::heartSizeX, cs::heartSizeY));
-        heart.setTexture(&texture_);
-        heart.setPosition(cs::heartPostitions[i]);
-        hearts_.push_back(heart);
+        heart.setSize(sf::Vector2f(cs::HEART_SIZE_X, cs::HEART_SIZE_Y));
+        heart.setTexture(&texture);
+        heart.setPosition(cs::HEART_POSITIONS[i]);
+        hearts.push_back(heart);
     }
 }
 
 void HealthScore::draw(sf::RenderWindow& window)
 {
-    for (auto i = 0; i < numberHearts_; i++)
+    for (auto i = 0; i < numHearts; i++)
     {
-        window.draw(hearts_[i]);
+        window.draw(hearts[i]);
     }
 }
 
-void HealthScore::deductHealth(int damage_level) {
-    if(numberHearts_ - damage_level <= cs::initialHearts){
-        numberHearts_ -= damage_level;
+void HealthScore::deductHealth(int damage_level)
+{
+    if(numHearts - damage_level <= cs::INITIAL_HEARTS)
+    {
+        numHearts -= damage_level;
     }
 }

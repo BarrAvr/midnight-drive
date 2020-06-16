@@ -1,60 +1,80 @@
-#include "Constants.h"
 #include "Player.h"
+#include "Constants.h"
+#include "FileNotFound.h"
+
 namespace cs = constants;
 
-Player::Player(HealthScore& healthScore) : healthScore_(healthScore)
+Player::Player(HealthScore& healthScore) : healthScore(healthScore)
 {
-    //TODO: Add file check
-    textureBlue_.loadFromFile(cs::ResourcePath + cs::carTexture);
-    textureRed_.loadFromFile(cs::ResourcePath + cs::carHitTexture);
+    std::string texturePath = cs::RESOURCE_PATH + cs::CAR_TEXTURE;
+    while (!textureBlue.loadFromFile(texturePath))
+    {
+        try { throw FileNotFound("Car Texture"); }
+        catch (FileNotFound e)
+        {
+            std::cout << e.what();
+            texturePath = e.resolve();
+            if (texturePath == "")
+                break;
+        }
+    }
 
-    player_.setScale(sf::Vector2f(cs::playerSize, cs::playerSize));
+    texturePath = cs::RESOURCE_PATH + cs::CAR_HIT_TEXTURE;
+    while (!textureRed.loadFromFile(texturePath))
+    {
+        try { throw FileNotFound("Car Hit Texture"); }
+        catch (FileNotFound e)
+        {
+            std::cout << e.what();
+            texturePath = e.resolve();
+            if (texturePath == "")
+                break;
+        }
+    }
 
-    player_.setTexture(textureBlue_);
-
-    player_.setPosition(sf::Vector2f(cs::playerStartingPosX, cs::playerStartingPosY));
+    player_.setScale(sf::Vector2f(cs::PLAYER_SIZE, cs::PLAYER_SIZE));
+    player_.setTexture(textureBlue);
+    player_.setPosition(sf::Vector2f(cs::PLAYER_STARTING_POS_X, cs::PLAYER_STARTING_POS_Y));
 }
 
 void Player::changeLane(Player::Movement playerDirection)
 {
-    if (movingToLane_ != Player::Movement::NONE)
-    {
+    if (movingToLane != Player::Movement::NONE)
         return;
-    }
 
-    // Move right
-    if (playerDirection == Player::Movement::RIGHT && currentLane < 4)
+    if (playerDirection == Player::Movement::RIGHT && currentLane < 4)      // Move right
     {
         currentLane++;
-        movingToLane_ = Player::Movement::RIGHT;
+        movingToLane = Player::Movement::RIGHT;
     }
-        // Move left
-    else if (playerDirection == Player::Movement::LEFT && currentLane > 1)
+
+    else if (playerDirection == Player::Movement::LEFT && currentLane > 1)  // Move left
     {
         currentLane--;
-        movingToLane_ = Player::Movement::LEFT;
+        movingToLane = Player::Movement::LEFT;
     }
 }
 
 void Player::movePlayer(float speedMultiplier)
 {
-    if (movingToLane_ != Player::Movement::NONE)
+    if (movingToLane != Player::Movement::NONE)
     {
-        if (movingToLane_ == Player::Movement::LEFT)
+        if (movingToLane == Player::Movement::LEFT)
         {
-            player_.move(sf::Vector2f(-cs::basePlayerMoveSpeed, 0));
-        } else
+            player_.move(sf::Vector2f(-cs::BASE_PLAYER_MOVE_SPEED, 0));
+        }
+        else
         {
-            player_.move(sf::Vector2f(cs::basePlayerMoveSpeed, 0));
+            player_.move(sf::Vector2f(cs::BASE_PLAYER_MOVE_SPEED, 0));
         }
 
-        int targetPos = cs::targetX_[currentLane - 1];    // lane x-pos
+        int targetPos = cs::TARGET_X[currentLane - 1];    // lane x-pos
         int playerPos = player_.getPosition().x;
 
         // stop moving if car is in the correct lane
         if (playerPos >= (targetPos - 5) && playerPos <= (targetPos + 5))
         {
-            movingToLane_ = Player::Movement::NONE;
+            movingToLane = Player::Movement::NONE;
         }
     }
 }
@@ -69,23 +89,24 @@ sf::Sprite Player::getPlayer()
     return player_;
 }
 
-void Player::getHit(Damage dmg, int damage_level) {
+void Player::getHit(Damage dmg, int damage_level)
+{
     if (dmg == Damage::NOT_HIT)
     {
-        if (hitTimer_.getElapsedTime().asMilliseconds() > cs::hitDelay)
+        if (hitTimer.getElapsedTime().asMilliseconds() > cs::HIT_DELAY)
         {
-            player_.setTexture(textureBlue_);
-            gettingHit_ = Damage::NOT_HIT;
+            player_.setTexture(textureBlue);
+            gettingHit = Damage::NOT_HIT;
         }
     }
     else
     {
-        if (gettingHit_ == Damage::NOT_HIT)
+        if (gettingHit == Damage::NOT_HIT)
         {
-            healthScore_.deductHealth(damage_level);
-            player_.setTexture(textureRed_);
-            hitTimer_.restart();
-            gettingHit_ = Damage::HIT;
+            healthScore.deductHealth(damage_level);
+            player_.setTexture(textureRed);
+            hitTimer.restart();
+            gettingHit = Damage::HIT;
         }
     }
 }

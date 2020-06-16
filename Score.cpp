@@ -5,7 +5,7 @@ namespace cs = constants;
 
 Score::Score()
 {
-    font.loadFromFile(cs::ResourcePath + cs::font);
+    font.loadFromFile(cs::RESOURCE_PATH + cs::FONT);
     scoreText.setFont(font);
     scoreText.setCharacterSize(60);
     scoreText.setFillColor(sf::Color::White);
@@ -14,16 +14,16 @@ Score::Score()
 
 void Score::draw(sf::RenderWindow& window)
 {
-    scoreText.setString("Score: " + std::to_string(score_));
+    scoreText.setString("Score: " + std::to_string(score));
     window.draw(scoreText);
 }
 
 void Score::addToScore()
 {
-    score_ += 5;
+    score += 5;
 }
 
 bool operator<(const Score& a, const Score& b)
 {
-    return a.score_ < b.score_;
+    return a.score < b.score;
 }
