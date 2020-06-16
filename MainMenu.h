@@ -18,7 +18,7 @@ public:
 
     bool startMenu();
     void draw();
-    void move();
+    void move(int direction);
     void hoverSelected(int selection) override;
     int getSelectedItemIndex() const
     {

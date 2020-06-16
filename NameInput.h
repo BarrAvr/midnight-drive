@@ -22,10 +22,8 @@ public:
     void typedOn(sf::Event input);
     void draw(sf::RenderWindow& window) override;
     void hoverSelected(int selection) override;
-    static Score addScoreToFile(std::ostream& file);
-    
-    std::string getName()
-    { return text.str(); }
+    std::string getName();
+
     bool getContinueSelected() const
     { return continueSelected; }
 };

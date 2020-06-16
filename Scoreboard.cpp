@@ -2,7 +2,6 @@
 #include <algorithm>
 #include "Scoreboard.h"
 #include "FileNotFound.h"
-#include "Constants.h"
 
 namespace cs = constants;
 
@@ -90,10 +89,17 @@ std::ostream& operator<<(std::ostream& out, Scoreboard& s)
 {
     for (auto& score : s.getScores())
     {
-        // we don't want to output "0,-----" strings to the file
-        if (!(score.first.getScore() == 0 && score.second == "-----"))
+        if (!(score.first.getScore() == 0))
         {
-            out << score.first.getScore() << "," << score.second << std::endl;
+            out << score.first.getScore() << ",";
+            if (!(score.second != ""))
+            {
+                out << "Anonymous" << std::endl;
+            }
+            else
+            {
+                out << score.second << std::endl;
+            }
         }
     }
     return out;

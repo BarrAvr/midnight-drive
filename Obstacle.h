@@ -16,6 +16,7 @@ protected:
 
 public:
     explicit Obstacle(Score& score, int damage_level);
+    virtual ~Obstacle() = default;
     virtual std::string type() const = 0;
     void crashInToCar(Player& player) { player.getHit(Player::Damage::HIT, damageLevel); makeCrashSound(); }
 

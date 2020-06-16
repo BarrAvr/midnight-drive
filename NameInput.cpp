@@ -147,7 +147,10 @@ void NameInput::hoverSelected(int selection)
     }
 }
 
-NameInput::Score NameInput::addScoreToFile(std::ostream& file)
+std::string NameInput::getName()
 {
-    return NameInput::Score();
+    if (text.str() == "")
+        return "J Doe";
+    else
+        return text.str();
 }

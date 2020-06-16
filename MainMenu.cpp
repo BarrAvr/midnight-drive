@@ -1,6 +1,5 @@
 #include "MainMenu.h"
 #include "ControlMenu.h"
-#include "NameInput.h"
 #include "FileNotFound.h"
 #include "Constants.h"
 #include "Instructions.h"
@@ -114,12 +113,12 @@ bool MainMenu::startMenu()
                 if (menuScreen.key.code == sf::Keyboard::Up && menuScreen.type == sf::Event::KeyReleased)
                 {
                     button.play();
-                    move();
+                    move(-1);
                 }
                 if (menuScreen.key.code == sf::Keyboard::Down && menuScreen.type == sf::Event::KeyReleased)
                 {
                     button.play();
-                    move();
+                    move(1);
                 }
                 // which menu option is selected using enter key
                 if (menuScreen.key.code == sf::Keyboard::Return && menuScreen.type == sf::Event::KeyReleased)
@@ -299,9 +298,22 @@ void MainMenu::draw()
 }
 
 
-void MainMenu::move()
+void MainMenu::move(int direction)
 {
-    selectedItemIndex > 1 ? selectedItemIndex-- : selectedItemIndex++;
+    menuText[selectedItemIndex].setFillColor(cs::HOVER_OFF_COLOR.first);
+    menuText[selectedItemIndex].setOutlineThickness(cs::HOVER_OFF_COLOR.second);
+
+    if (direction < 0)
+    {
+        if (selectedItemIndex != 1)
+            selectedItemIndex--;
+    }
+    else
+    {
+        if (selectedItemIndex != 4)
+            selectedItemIndex++;
+    }
+
     menuText[selectedItemIndex].setFillColor(cs::HOVER_ON_COLOR.first);
     menuText[selectedItemIndex].setOutlineThickness(cs::HOVER_ON_COLOR.second);
 }

@@ -6,8 +6,8 @@
 const char* FileNotFound::what() const noexcept
 {
     static char temp[200];
-    strcpy_s(temp, "Could not find ");
-    strcat_s(temp, std::runtime_error::what());
+    strcpy(temp, "Could not find ");
+    strcat(temp, std::runtime_error::what());
     return temp;
 }
 
