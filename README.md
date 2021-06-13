@@ -6,7 +6,7 @@ See if you can beat your high score!
 
 ## Images
 
-<TODO>
+TODO
 
 ## Dependencies/References
 
@@ -27,3 +27,7 @@ Then build the project:
     $ ./MidnightDrive
 
 You may have to edit the Constants.h file, locate RESOURCE_PATH and change the path to where the resources are located.
+
+## License 
+
+This project is licensed under the MIT License 
