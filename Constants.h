@@ -6,7 +6,7 @@
 
 namespace constants
 {
-    const std::string RESOURCE_PATH{"/Users/kelly/CLionProjects/MidnightDriveMaster/Resources/"};
+    const std::string RESOURCE_PATH{"../Resources/"};
 
     const std::array<std::string, 6> OBSTACLE_FILENAMES
             {

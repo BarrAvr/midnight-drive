@@ -1,3 +1,4 @@
+#include <cstring> 
 #include <iostream>
 #include <exception>
 #include <fstream>
